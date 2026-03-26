@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crmSMART | CRM Inteligente y Simple para PYMEs</title>
+    <!-- Fuente Inter (Estilo Folk/Notion) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- ESTILOS INSPIRADOS EN FOLK.APP --- */
+        :root {
+            --bg-page: #fcfcfc;
+            --bg-surface: #ffffff;
+            --border: #e6e8eb;
+            --text-main: #11181c;
+            --text-muted: #687076;
+            --primary: #11181c;
+            --accent: #eaff00; /* Tu amarillo distintivo */
+            
+            /* Radios estilo Folk */
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 9999px;
+            
+            /* Sombras suaves y modernas */
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.03);
+        }
+
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0; 
+            line-height: 1.6; 
+            color: var(--text-main); 
+            background-color: var(--bg-page); 
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Navegación Flotante Estilo Folk */
+        nav { 
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(12px);
+            padding: 1rem 4%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            border-bottom: 1px solid rgba(230, 232, 235, 0.5);
+        }
+        .logo { 
+            font-weight: 800; 
+            font-size: 1.25rem; 
+            color: var(--primary); 
+            text-decoration: none; 
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-icon {
+            background: var(--accent);
+            width: 24px; height: 24px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        section { padding: 90px 5%; max-width: 1100px; margin: 0 auto; }
+        
+        /* Tipografía de Títulos */
+        h1, h2, h3, h4 { letter-spacing: -0.03em; margin-top: 0; color: var(--text-main); }
+        h2 { text-align: center; margin-bottom: 50px; font-size: 2.5rem; font-weight: 700; }
+
+        /* Botones estilo Folk (Pill-shaped) */
+        .btn { 
+            padding: 12px 24px; 
+            text-decoration: none; 
+            font-weight: 500; 
+            border-radius: var(--radius-pill); 
+            cursor: pointer; 
+            border: none; 
+            transition: all 0.2s ease; 
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-main:hover { background: #000; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: #f2f3f5; }
+
+        /* --- HERO SECTION --- */
+        .hero { 
+            text-align: center; 
+            padding: 100px 5% 80px; 
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-sm);
+        }
+        .hero h1 { 
+            font-size: 4rem; 
+            margin-bottom: 24px; 
+            line-height: 1.1; 
+            font-weight: 800;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero p { 
+            color: var(--text-muted); 
+            max-width: 600px; 
+            margin: 0 auto 40px; 
+            font-size: 1.25rem; 
+            font-weight: 400;
+        }
+        .hero-cta-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- NUEVAS CLASES PARA IMÁGENES --- */
+        .hero-image-wrapper {
+            margin-top: 60px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            line-height: 0;
+            position: relative;
+        }
+        .hero-image-wrapper img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .feature-card.has-image { padding: 0; display: flex; flex-direction: column; overflow: hidden; }
+        .feature-img-container { height: 180px; width: 100%; overflow: hidden; border-bottom: 1px solid var(--border); }
+        .feature-img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .feature-card:hover .feature-img-container img { transform: scale(1.05); }
+        .feature-content { padding: 32px; flex-grow: 1; }
+
+        .cta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            text-align: left;
+            background: var(--bg-surface);
+            padding: 60px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            margin: 60px auto;
+            max-width: 1100px;
+        }
+        .cta-grid h2 { text-align: left; margin-bottom: 20px; font-size: 2.5rem; }
+        .cta-image { border-radius: var(--radius-md); overflow: hidden; line-height: 0; height: 100%; min-height: 350px;}
+        .cta-image img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- EMBUDO: PROBLEMA --- */
+        .problem-section { background: var(--bg-page); }
+        .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .problem-card { 
+            padding: 32px; 
+            border-radius: var(--radius-md); 
+            background: var(--bg-surface); 
+            border: 1px solid var(--border); 
+            text-align: left; 
+            box-shadow: var(--shadow-sm);
+        }
+        .problem-card h4 { font-size: 1.15rem; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-weight: 600; }
+        .problem-card p { color: var(--text-muted); margin: 0; font-size: 1rem; line-height: 1.5; }
+
+        /* --- EMBUDO: SOLUCIÓN (Features Bento) --- */
+        .features { padding-top: 40px; }
+        .grid-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--bg-surface);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .feature-icon-wrapper {
+            width: 48px; height: 48px;
+            background: #f4f5f7;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .feature-card h3 { font-size: 1.3rem; margin-bottom: 12px; font-weight: 600; }
+        .feature-card p { color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin: 0;}
+
+        /* --- EMBUDO: CÓMO FUNCIONA --- */
+        .steps-section { background: var(--primary); border-radius: var(--radius-lg); color: white; padding: 80px 5%; margin: 60px auto; max-width: 1200px; width: 90%;}
+        .steps-section h2 { color: white; margin-bottom: 60px; }
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; counter-reset: step-counter; }
+        .step-card { position: relative; }
+        .step-number {
+            width: 32px; height: 32px;
+            background: var(--accent); color: var(--primary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem; margin-bottom: 20px;
+        }
+        .step-card h3 { color: white; margin-bottom: 12px; font-size: 1.2rem; font-weight: 500;}
+        .step-card p { color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.6; margin: 0;}
+
+        /* --- CTA FINAL --- */
+        .bottom-cta-section { text-align: center; padding: 100px 5% 120px; }
+        .bottom-cta-section h2 { font-size: 3rem; margin-bottom: 16px; }
+
+        /* --- DEMO APP MOCKUP --- */
+        .demo-section { display: none; margin-top: 40px; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .mockup-wrapper {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 500px;
+        }
+        .mockup-sidebar {
+            background: #fafbfc;
+            border-right: 1px solid var(--border);
+            padding: 24px;
+        }
+        .mockup-sidebar h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 20px; font-weight: 600;}
+        .ai-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+        .ai-card p { font-size: 0.85rem; margin: 0; color: var(--text-main); }
+        .ai-tag { display: inline-block; background: #f0fdf4; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin-top: 8px;}
+        
+        .mockup-main { padding: 0; }
+        .mockup-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;}
+        .mockup-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .mockup-table th { text-align: left; padding: 12px 24px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-weight: 500;}
+        .mockup-table td { padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-main);}
+        .avatar { width: 24px; height: 24px; background: #e2e8f0; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 8px;}
+        .badge { padding: 4px 10px; border-radius: var(--radius-pill); font-size: 0.75rem; font-weight: 600; }
+        .badge-warm { background: #fef08a; color: #854d0e; }
+        .badge-won { background: #dcfce7; color: #166534; }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.8); display: none; 
+            justify-content: center; align-items: center; z-index: 2000;
+            backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg);
+            width: 100%; max-width: 400px; position: relative;
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+            animation: modalFadeIn 0.3s ease;
+        }
+        .close-modal {
+            position: absolute; top: 16px; right: 20px;
+            font-size: 1.5rem; cursor: pointer; color: var(--text-muted); line-height: 1;
+        }
+        .modal-content h3 { font-size: 1.5rem; margin-bottom: 8px; }
+        .modal-content p.subtitle { color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;}
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted); }
+        .modal-content input {
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); box-sizing: border-box; font-size: 0.95rem;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .modal-content input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+        #formStatus { margin-top: 15px; text-align: center; font-size: 0.9rem; display: none; }
+
+        footer { text-align: center; padding: 40px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.85rem;}
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero-cta-group { flex-direction: column; }
+            .hero-cta-group .btn { width: 100%; }
+            .mockup-wrapper { grid-template-columns: 1fr; }
+            .cta-grid { grid-template-columns: 1fr; padding: 40px 24px; text-align: center; }
+            .cta-grid h2 { text-align: center; font-size: 2rem; }
+            .cta-image { min-height: 250px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">
+            <span class="logo-icon"></span> crmSMART
+        </a>
+        <button class="btn btn-outline btn-trigger-modal">Agendar Demo</button>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-badge">✨ El CRM para la nueva generación de PYMEs</div>
+        <h1>Tan simple como tus notas.<br>Infinitamente más potente.</h1>
+        <p>Deja de perder ventas por desorganización. Un CRM inteligente que organiza, recuerda y analiza a tus clientes sin requerir conocimientos técnicos.</p>
+        
+        <div class="hero-cta-group">
+            <button class="btn btn-main btn-trigger-modal" style="padding: 16px 32px; font-size: 1.05rem;">Solicitar Demostración</button>
+        </div>
+
+        <div class="hero-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1559097280-ce4b032b67a6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Tablero de análisis en laptop">
+        </div>
+    </header>
+
+    <!-- 1. SECCIÓN DE PROBLEMA -->
+    <section class="problem-section">
+        <h2 style="font-size: 2rem; margin-bottom: 40px;">¿Por qué las PYMEs pierden ventas?</h2>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <h4>📝 Notas perdidas</h4>
+                <p>Anotas prospectos en libretas o WhatsApp. Días después, no recuerdas dónde quedó el contacto ni qué cotizaste.</p>
+            </div>
+            <div class="problem-card">
+                <h4>📉 Excel desactualizado</h4>
+                <p>Una hoja de cálculo gigante que nadie quiere llenar. Los datos están obsoletos y no sirven para tomar decisiones.</p>
+            </div>
+            <div class="problem-card">
+                <h4>❄️ Clientes olvidados</h4>
+                <p>Olvidas llamar a ese cliente "casi listo". Cuando por fin lo contactas, ya le compró a tu competencia.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. SECCIÓN DE SOLUCIÓN (Bento Grid Style) -->
+    <section class="features" id="funciones">
+        <h2>Inteligencia comercial, cero fricción.</h2>
+        <div class="grid-features">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">📇</div>
+                <h3>Organiza y Recuerda</h3>
+                <p>Una interfaz impecable que centraliza tu información y te alerta automáticamente cuándo hacer seguimiento. Nunca más perderás una venta por un descuido.</p>
+            </div>
+            <div class="feature-card has-image">
+                <div class="feature-img-container">
+                    <img src="https://images.unsplash.com/photo-1678227547316-fb79e35b085d?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Inteligencia artificial y datos">
+                </div>
+                <div class="feature-content">
+                    <div class="feature-icon-wrapper" style="margin-bottom: 16px; width: 40px; height: 40px; font-size: 1.2rem;">🧠</div>
+                    <h3>IA Invisible</h3>
+                    <p>Olvídate de configurar reportes complejos. La inteligencia artificial analiza tus datos en segundo plano y te entrega conclusiones claras.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🎯</div>
+                <h3>Detecta Oportunidades</h3>
+                <p>El sistema identifica patrones ocultos y te sugiere qué clientes tienen mayor probabilidad de compra hoy, optimizando tu tiempo al máximo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. CÓMO FUNCIONA -->
+    <section class="steps-section">
+        <h2>De caos comercial a control total en 3 pasos</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Registra sin esfuerzo</h3>
+                <p>Ingresa clientes en una vista limpia y familiar. Sin menús ocultos ni meses de implementación.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>La IA hace el trabajo</h3>
+                <p>El sistema clasifica, ordena y detecta quiénes son tus clientes más valiosos automáticamente.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Recibe alertas y cierra</h3>
+                <p>Abre la app y recibe notificaciones claras: "Llama a Juan hoy". Tú vendes, nosotros recordamos.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="bottom-cta-section" style="padding: 0 5%;">
+        <div class="cta-grid">
+            <div>
+                <h2>Empieza a cerrar más ventas.</h2>
+                <p style="color: var(--text-muted); font-size: 1.15rem; margin-bottom: 32px;">Descubre cómo crmSMART se adapta a tu negocio en una breve llamada de 15 minutos. Sin compromisos, solo soluciones reales para tu equipo.</p>
+                <button class="btn btn-main btn-trigger-modal" style="padding: 16px 40px; font-size: 1.1rem;">Agendar Demostración</button>
+            </div>
+            <div class="cta-image">
+                <img src="https://plus.unsplash.com/premium_photo-1661574764946-6040f8322541?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Equipo de PYME colaborando">
+            </div>
+        </div>
+    </section>
+
+    <!-- DEMO APP MOCKUP (Oculta hasta el registro) -->
+    <section id="demo" class="demo-section">
+        <div style="text-align: center; margin-bottom: 40px; padding: 0 5%;">
+            <h2 style="font-size: 2rem; margin-bottom: 12px;">¡Solicitud enviada! 🎉</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">Te contactaremos pronto. Echa un vistazo a tu futuro espacio de trabajo.</p>
+        </div>
+        
+        <div class="mockup-wrapper">
+            <aside class="mockup-sidebar">
+                <h4>Copiloto IA</h4>
+                <div class="ai-card">
+                    <p><strong>Inversiones Andes</strong> tiene alta probabilidad de compra esta semana.</p>
+                    <span class="ai-tag">92% Match</span>
+                </div>
+                <div class="ai-card" style="opacity: 0.7;">
+                    <p>Hace 7 días que no contactas a <strong>Carlos Ruiz</strong>. Sugerimos seguimiento.</p>
+                </div>
+            </aside>
+            <main class="mockup-main">
+                <div class="mockup-header">
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:600;">Contactos Activos</h3>
+                    <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;">+ Nuevo</button>
+                </div>
+                <table class="mockup-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Última Interacción</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="avatar"></span><strong>Laura Gómez</strong></td>
+                            <td>Hace 2 horas</td>
+                            <td><span class="badge badge-warm">En negociación</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="avatar"></span><strong>María Peña</strong></td>
+                            <td>Ayer</td>
+                            <td><span class="badge badge-won">Cerrado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </section>
+
+    <!-- MODAL DE REGISTRO -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3>Agendar Demo</h3>
+            <p class="subtitle">Déjanos tus datos y te mostraremos la plataforma en acción.</p>
+            
+            <form id="leadForm">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="email" name="email" placeholder="juan@empresa.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de la Empresa</label>
+                    <input type="text" id="empresa" name="empresa" placeholder="Ej. Comercializadora ABC" required>
+                </div>
+                <button type="submit" class="btn btn-main" style="width:100%; margin-top: 10px;">Enviar Solicitud</button>
+                <div id="formStatus"></div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 crmSMART - Tecnología diseñada para simplificar.</p>
+    </footer>
+
+    <script>
+        // --- LÓGICA DE INTERFAZ (MODAL Y DEMO) ---
+        const modal = document.getElementById('registerModal');
+        const demoSection = document.getElementById('demo');
+        const triggerBtns = document.querySelectorAll('.btn-trigger-modal');
+        const formStatus = document.getElementById('formStatus');
+
+        triggerBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.style.display = 'flex';
+            });
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        // --- LÓGICA DE CONEXIÓN CON GOOGLE SHEETS (FETCH) ---
+        const leadForm = document.getElementById('leadForm');
+        
+        // URL DE TU WEB APP DE GOOGLE APPS SCRIPT
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzB-q03AwjSmzTYD1lPFfEgrQD7LmMAWqRKZPqHedNmEvrYxsA-dkJWWK-LqwCsfC3nKg/exec'; 
+
+        leadForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const submitBtn = leadForm.querySelector('button[type="submit"]');
+            submitBtn.innerText = "Enviando...";
+            submitBtn.disabled = true;
+
+            const formData = new FormData(leadForm);
+
+            fetch(scriptURL, { method: 'POST', body: formData})
+                .then(response => {
+                    modal.style.display = 'none';
+                    demoSection.style.display = 'block';
+                    demoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    leadForm.reset();
+                    submitBtn.innerText = "Enviar Solicitud";
+                    submitBtn.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    formStatus.style.display = 'block';
+                    formStatus.style.color = '#d9534f';
+                    formStatus.innerText = "Error de conexión. Intenta de nuevo.";
+                    submitBtn.innerText = "Enviar Solicitud";
+                    submitBtn.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>
