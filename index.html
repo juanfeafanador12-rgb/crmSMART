@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crmSMART | El Sistema Nervioso Central de tu Empresa</title>
+    <!-- Fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- ESTILOS DARK MODE (Negro Profundo y Morado Neón) --- */
+        :root {
+            --bg-page: #050505; /* Negro profundo para el fondo principal */
+            --bg-surface: #111111; /* Gris súper oscuro para las tarjetas */
+            --border: #222222; /* Bordes sutiles oscuros */
+            --text-main: #f3f4f6; /* Blanco humo para legibilidad perfecta */
+            --text-muted: #9ca3af; /* Gris claro para textos secundarios */
+            
+            --primary: #ffffff; /* Blanco puro para títulos fuertes */
+            --accent: #a855f7; /* Morado vibrante principal */
+            --accent-hover: #c084fc; /* Morado más claro para hover */
+            --accent-light: rgba(168, 85, 247, 0.15); /* Fondo morado translúcido */
+            --accent-glow: rgba(168, 85, 247, 0.5); /* Brillo morado para sombras */
+            
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 9999px;
+            
+            --shadow-sm: 0 4px 10px rgba(0,0,0,0.5);
+            --shadow-md: 0 8px 20px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.1);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.9), 0 0 30px rgba(168, 85, 247, 0.15);
+        }
+
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0; line-height: 1.6; color: var(--text-main); 
+            background-color: var(--bg-page); -webkit-font-smoothing: antialiased;
+        }
+        
+        /* --- ANIMACIONES Y EFECTOS ESTÉTICOS --- */
+        html { scroll-behavior: smooth; }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .fade-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating { animation: float 6s ease-in-out infinite; }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); }
+            50% { box-shadow: 0 0 35px rgba(168, 85, 247, 0.6); border-color: rgba(168, 85, 247, 0.8); }
+            100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); }
+        }
+        .pulse-glow { animation: pulse-glow 3s infinite; }
+
+        /* Utilidades Generales */
+        .hidden { display: none !important; }
+        h1, h2, h3, h4 { letter-spacing: -0.03em; margin-top: 0; color: var(--primary); }
+        
+        /* --- NAVEGACIÓN Y LANDING PAGE --- */
+        nav { background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(12px); padding: 1rem 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        section { padding: 90px 5%; max-width: 1100px; margin: 0 auto; }
+        h2.section-title { text-align: center; margin-bottom: 20px; font-size: 2.5rem; font-weight: 700; text-shadow: 0 0 20px rgba(168,85,247,0.2); }
+        p.section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto 50px; }
+
+        /* --- BOTONES CON RELIEVE Y BRILLO (NEÓN) --- */
+        .btn { padding: 12px 24px; text-decoration: none; font-weight: 600; border-radius: var(--radius-pill); cursor: pointer; border: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; gap: 8px; }
+        
+        .btn-main { 
+            background: linear-gradient(180deg, #b574f9 0%, #9333ea 100%); 
+            color: white; 
+            /* Sombra exterior morada + sombra interior blanca (arriba) + sombra interior negra (abajo) = RELIEVE 3D */
+            box-shadow: 0 4px 15px var(--accent-glow), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.3);
+            border: 1px solid #c084fc;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .btn-main:hover { 
+            background: linear-gradient(180deg, #c084fc 0%, #a855f7 100%); 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 25px var(--accent-glow), inset 0 1px 2px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.3); 
+        }
+        
+        .btn-outline { 
+            background: rgba(168, 85, 247, 0.05); 
+            border: 1px solid var(--accent); 
+            color: var(--accent-hover); 
+            box-shadow: inset 0 0 10px rgba(168, 85, 247, 0);
+        }
+        .btn-outline:hover { 
+            background: var(--accent-light); 
+            transform: translateY(-2px); 
+            box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(168, 85, 247, 0.2); 
+            color: white;
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+        
+        .btn-danger { background: rgba(220, 38, 38, 0.1); color: #f87171; border: 1px solid #ef4444; }
+        .btn-danger:hover { background: rgba(220, 38, 38, 0.2); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+
+        /* Hero - Nuevo patrón de visualización (Split Layout 2 Columnas) */
+        .hero { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 60px; 
+            align-items: center; 
+            padding: 80px 5%; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            text-align: left; 
+        }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 16px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 500; color: var(--accent-hover); margin-bottom: 30px; box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); }
+        .hero h1 { font-size: 4rem; margin: 0 0 24px 0; line-height: 1.1; font-weight: 800; max-width: 100%; }
+        .hero p { color: var(--text-muted); max-width: 100%; margin: 0 0 40px 0; font-size: 1.25rem; }
+        .hero-cta-group { display: flex; gap: 12px; justify-content: flex-start; align-items: center; }
+        
+        .hero-image-container { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .hero-image-wrapper { width: 100%; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--border); line-height: 0; position: relative; aspect-ratio: 4/3; }
+        .hero-image-wrapper::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); pointer-events: none; }
+        .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+        
+        /* Grids y Cards */
+        .grid-features { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+        .feature-card { background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.4s; }
+        .feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-5px); border-color: rgba(168, 85, 247, 0.3); }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon-wrapper { width: 48px; height: 48px; background: var(--accent-light); color: var(--accent-hover); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 24px; border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: inset 0 0 10px rgba(168, 85, 247, 0.2); }
+        
+        /* Sección 360 grados */
+        .view-360-section { background: linear-gradient(145deg, #0f0a17 0%, #050505 100%); color: white; border-radius: var(--radius-lg); padding: 80px 5%; margin: 60px auto; max-width: 1200px; width: 90%; text-align: center; border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: 0 0 40px rgba(168, 85, 247, 0.05); }
+        .view-360-section h2 { color: white; font-size: 2.5rem; }
+        .view-360-section p { color: var(--text-muted); max-width: 800px; margin: 0 auto 40px; font-size: 1.15rem; }
+        .tags-360 { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+        .tag-360 { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); padding: 8px 16px; border-radius: var(--radius-pill); font-size: 0.9rem; color: var(--accent-hover); box-shadow: 0 0 10px rgba(168, 85, 247, 0.1); }
+
+        .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; background: var(--bg-surface); padding: 60px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-md); margin: 60px auto; max-width: 1100px; }
+        .cta-image { border-radius: var(--radius-md); overflow: hidden; height: 100%; min-height: 350px; line-height: 0; border: 1px solid #333; }
+        .cta-image img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+
+        /* --- INTERFAZ COMPLETA DEL CRM (App Mode) --- */
+        .crm-app {
+            display: none; height: 100vh; width: 100vw; background: var(--bg-page);
+            grid-template-columns: 280px 1fr; overflow: hidden; opacity: 0; transition: opacity 0.5s ease;
+        }
+
+        /* Sidebar CRM */
+        .crm-sidebar { background: var(--bg-surface); border-right: 1px solid var(--border); padding: 32px 24px; display: flex; flex-direction: column; justify-content: space-between; z-index: 10; }
+        .crm-nav { list-style: none; padding: 0; margin: 40px 0; flex-grow: 1; }
+        .crm-nav li { padding: 12px 16px; margin-bottom: 8px; border-radius: var(--radius-sm); color: var(--text-muted); font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .crm-nav li:hover { background: rgba(255,255,255,0.05); color: var(--primary); }
+        .crm-nav li.active { background: var(--accent-light); color: var(--accent-hover); border-left: 3px solid var(--accent); }
+
+        /* Widget Inteligencia Artificial Sidebar */
+        .crm-ai-widget { background: #0a0a0a; border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-md); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); position: relative; overflow: hidden; transition: all 0.3s ease;}
+        .crm-ai-widget::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        .ai-alert { background: rgba(168, 85, 247, 0.1); padding: 12px; border-radius: var(--radius-sm); margin-top: 12px; font-size: 0.8rem; color: var(--text-main); border: 1px solid rgba(168, 85, 247, 0.2); animation: modalPopUp 0.4s ease; box-shadow: inset 0 0 10px rgba(168, 85, 247, 0.05); }
+
+        /* Main Area CRM */
+        .crm-main { padding: 40px 60px; overflow-y: auto; background: var(--bg-page); position: relative;}
+        .crm-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        
+        .crm-controls { display: flex; gap: 16px; margin-bottom: 24px; }
+        .crm-search { flex-grow: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'Inter'; transition: all 0.2s; background: var(--bg-surface); color: var(--text-main); }
+        .crm-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); }
+
+        /* Tabla CRM */
+        .crm-table-wrapper { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
+        .crm-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        .crm-table th { text-align: left; padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-weight: 500; background: #0a0a0a; }
+        .crm-table td { padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: middle; }
+        .crm-table tr:last-child td { border-bottom: none; }
+        .crm-table tr:hover td { background: #1a1a1a; cursor: default; }
+        
+        /* Elementos UI Tabla */
+        .avatar { width: 36px; height: 36px; background: var(--accent-light); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; color: var(--accent-hover); vertical-align: middle; margin-right: 12px; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .badge { padding: 6px 12px; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 600; display: inline-block;}
+        .badge-warm { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .badge-won { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .badge-cold { background: rgba(156, 163, 175, 0.1); color: #e5e7eb; border: 1px solid rgba(156, 163, 175, 0.2); }
+        
+        /* Select de Estado */
+        .status-select { border: none; background: transparent; font-family: 'Inter'; font-weight: 600; cursor: pointer; padding: 4px; border-radius: 4px; appearance: none; -webkit-appearance: none; color: inherit; }
+        .status-select option { background: var(--bg-surface); color: var(--text-main); }
+        .status-select:hover { background: rgba(255,255,255,0.05); }
+        .status-select:focus { outline: none; background: var(--bg-surface); box-shadow: 0 0 0 2px var(--accent); }
+
+        /* IA Score */
+        .ai-score { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .ai-score-bar { height: 6px; width: 60px; background: #333; border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+        .ai-score-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.5s ease; box-shadow: 0 0 8px var(--accent); }
+
+        /* Vistas (Tabs) */
+        .crm-view { display: none; animation: fadeIn 0.4s ease; }
+        .crm-view.active { display: block; }
+        
+        /* --- VISTA 360° Y WHATSAPP STYLES --- */
+        .chat-layout { display: grid; grid-template-columns: 280px 1fr 300px; height: calc(100vh - 220px); min-height: 500px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+        .chat-sidebar { border-right: 1px solid var(--border); display: flex; flex-direction: column; background: #0a0a0a;}
+        .chat-sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); }
+        .chat-list { flex-grow: 1; overflow-y: auto; }
+        .chat-item { padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 12px; }
+        .chat-item:hover { background: #1a1a1a; }
+        .chat-item.active { background: var(--bg-surface); border-left: 3px solid var(--accent); }
+        
+        /* Chat Central */
+        .chat-main { display: flex; flex-direction: column; background: var(--bg-surface); border-right: 1px solid var(--border); }
+        .chat-header { padding: 16px 24px; background: var(--bg-surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .chat-history { flex-grow: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: #050505; }
+        .chat-bubble { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.4; box-shadow: var(--shadow-sm); }
+        .chat-bubble.incoming { background: var(--bg-surface); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .chat-bubble.outgoing { background: linear-gradient(135deg, var(--accent) 0%, #7e22ce 100%); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(168,85,247,0.3); }
+        .chat-input-area { padding: 16px 24px; background: var(--bg-surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;}
+        .ai-chat-suggestion { font-size: 0.85rem; color: white; background: linear-gradient(135deg, var(--accent) 0%, #7e22ce 100%); padding: 10px 16px; border-radius: var(--radius-pill); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; width: fit-content; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px rgba(168,85,247,0.4); font-weight: 500;}
+        .ai-chat-suggestion:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168,85,247,0.6); }
+        .ai-chat-suggestion:active { transform: translateY(0); }
+        
+        /* Expediente 360° (Columna derecha) */
+        .profile-360 { background: var(--bg-surface); display: flex; flex-direction: column; overflow-y: auto; }
+        .profile-360-header { padding: 24px; text-align: center; border-bottom: 1px solid var(--border); background: #0a0a0a; }
+        .profile-360-avatar { width: 64px; height: 64px; font-size: 1.5rem; margin: 0 auto 12px; }
+        .profile-section { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+        .profile-section h4 { font-size: 0.8rem; text-transform: uppercase; color: var(--accent-hover); margin-bottom: 12px; letter-spacing: 0.05em; }
+        .profile-data-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 0.9rem; }
+        .profile-data-icon { color: var(--text-muted); width: 20px; }
+
+        /* Dashboard/Reportes IA Styles */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background: var(--bg-surface); border: 1px solid var(--border); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+        .stat-card h4 { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; font-weight: 500;}
+        .stat-card .value { font-size: 2.5rem; font-weight: 700; color: var(--primary); text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+        .ai-insight-box { background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, #111111 100%); border: 1px solid rgba(168, 85, 247, 0.4); padding: 32px; border-radius: var(--radius-lg); margin-bottom: 24px; box-shadow: 0 0 20px rgba(168,85,247,0.05); }
+
+        /* --- MODALES Y FORMS --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); animation: overlayFadeIn 0.3s ease forwards; }
+        @keyframes overlayFadeIn { from { opacity: 0; backdrop-filter: blur(0px); } to { opacity: 1; backdrop-filter: blur(10px); } }
+        .modal-content { background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); width: 100%; max-width: 450px; position: relative; box-shadow: var(--shadow-lg); border: 1px solid var(--border); animation: modalPopUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; max-height: 90vh; overflow-y: auto;}
+        @keyframes modalPopUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .close-modal { position: absolute; top: 16px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); line-height: 1; transition: color 0.2s; }
+        .close-modal:hover { color: var(--primary); }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); box-sizing: border-box; font-size: 0.95rem; transition: all 0.3s; font-family: 'Inter', sans-serif; background: #0a0a0a; color: var(--text-main); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); background: #111; }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: #555; }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-direction: row; }
+        .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; margin: 0; cursor: pointer; accent-color: var(--accent); }
+        .checkbox-group label { margin: 0; font-weight: 400; font-size: 0.85rem; cursor: pointer; color: var(--text-main); }
+
+        /* Toast Notifications */
+        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg-surface); border: 1px solid var(--accent); color: white; padding: 16px 24px; border-radius: var(--radius-md); font-weight: 500; box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2); display: flex; align-items: center; gap: 12px; z-index: 3000; transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* --- NUEVOS ESTILOS PARA LOGIN/REGISTRO --- */
+        .social-login-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+        .btn-social { background: #1a1a1a; border: 1px solid #333; color: var(--text-main); justify-content: center; width: 100%; box-shadow: none; font-weight: 500;}
+        .btn-social:hover { background: #222; border-color: #555; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .divider { display: flex; align-items: center; text-align: center; margin-bottom: 24px; color: var(--text-muted); font-size: 0.85rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
+        .text-link { color: var(--accent-hover); cursor: pointer; font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
+        .text-link:hover { color: var(--accent); text-decoration: underline; }
+
+        @media (max-width: 1024px) {
+            .hero { grid-template-columns: 1fr; text-align: center; gap: 40px; padding: 60px 5%; }
+            .hero h1 { font-size: 3.5rem; margin: 0 auto 20px; }
+            .hero p { margin: 0 auto 30px; }
+            .hero-cta-group { justify-content: center; }
+            .chat-layout { grid-template-columns: 250px 1fr; }
+            .profile-360 { display: none; }
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero-cta-group { flex-direction: column; } .hero-cta-group .btn { width: 100%; }
+            .cta-grid { grid-template-columns: 1fr; padding: 40px 24px; text-align: center; }
+            .crm-app { grid-template-columns: 1fr; }
+            .crm-sidebar { display: none; }
+            .crm-main { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .chat-layout { grid-template-columns: 1fr; }
+            .chat-sidebar { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- 1. LANDING PAGE (Página de Venta/Ingreso)  -->
+    <!-- ========================================== -->
+    <div id="landingPage">
+        <nav>
+            <a href="#" class="logo" style="gap: 8px;">
+                <!-- Logo restaurado a formato SVG para que funcione en la vista previa -->
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span style="font-weight: 800; font-size: 1.4rem; color: var(--primary); letter-spacing: -1px;">crm<span style="color: var(--accent-hover); text-shadow: 0 0 10px rgba(168,85,247,0.4);">SMART</span></span>
+            </a>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <button onclick="openModal('loginModal')" class="btn btn-outline">Iniciar sesión</button>
+                <button onclick="openModal('registerModal')" class="btn btn-main">Registrarse</button>
+            </div>
+        </nav>
+
+        <header class="hero">
+            <div class="hero-content">
+                <div class="hero-badge pulse-glow fade-up">✨ El Sistema Nervioso Central de tu Empresa</div>
+                <h1 class="fade-up delay-100">Más que un software,<br>la memoria de tu negocio.</h1>
+                <p class="fade-up delay-200">Deja de ver al CRM como una simple agenda. Centraliza estrategia, tecnología y relaciones humanas en una única plataforma inteligente diseñada para PYMEs.</p>
+                <div class="hero-cta-group fade-up delay-300">
+                    <button onclick="openModal('registerModal')" class="btn btn-main" style="padding: 16px 36px; font-size: 1.1rem;">Comenzar a usar gratis</button>
+                </div>
+            </div>
+            <div class="hero-image-container fade-up delay-400">
+                <div class="hero-image-wrapper floating">
+                    <img src="https://images.unsplash.com/photo-1678227547316-fb79e35b085d?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Usuario interactuando con el CRM">
+                </div>
+            </div>
+        </header>
+
+        <section class="features">
+            <h2 class="section-title fade-up">Las Tres Dimensiones de crmSMART</h2>
+            <p class="section-subtitle fade-up delay-100">Un CRM moderno no es una herramienta monolítica. Se divide en tres capas funcionales que trabajan en conjunto para cubrir todo el espectro de tu negocio.</p>
+            
+            <div class="grid-features">
+                <div class="feature-card fade-up delay-100">
+                    <div class="feature-icon-wrapper">⚡</div>
+                    <h3>CRM Operativo <br><span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">El Frente de Batalla</span></h3>
+                    <p>Agilizamos tus tareas diarias. Automatizamos los procesos de ventas, marketing y servicio al cliente para que tu equipo se enfoque en la eficiencia y en cerrar tratos.</p>
+                </div>
+                <div class="feature-card fade-up delay-200">
+                    <div class="feature-icon-wrapper">🧠</div>
+                    <h3>CRM Analítico <br><span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">El Cerebro</span></h3>
+                    <p>Los datos se convierten en conocimiento. Nuestra IA identifica patrones de compra, calcula el Churn Rate y te permite segmentar clientes por cómo actúan, no solo por quiénes son.</p>
+                </div>
+                <div class="feature-card fade-up delay-300">
+                    <div class="feature-icon-wrapper">🤝</div>
+                    <h3>CRM Colaborativo <br><span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">El Puente</span></h3>
+                    <p>Aseguramos que la información fluya entre todos los departamentos. Tu empresa hablará siempre con una sola voz, sin importar quién atienda al cliente final.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nueva sección: Vista 360 -->
+        <section class="view-360-section fade-up">
+            <h2 class="fade-up delay-100">El fin de la Amnesia Corporativa</h2>
+            <p class="fade-up delay-200">Sin un CRM, la información vive en la cabeza de un vendedor o en un Excel olvidado. Con crmSMART, creas un expediente digital eterno y único: la <strong>Vista de 360 Grados</strong>.</p>
+            
+            <div class="tags-360 fade-up delay-300">
+                <span class="tag-360">📧 Correos y WhatsApps enviados</span>
+                <span class="tag-360">🛒 Historial de compras</span>
+                <span class="tag-360">🗣️ Interacciones y quejas</span>
+                <span class="tag-360">⭐ Preferencias personales</span>
+                <span class="tag-360">📝 Notas de reuniones</span>
+            </div>
+        </section>
+
+        <section class="bottom-cta-section" style="padding: 60px 5% 100px;">
+            <div class="cta-grid">
+                <div class="fade-up">
+                    <h2 style="text-align: left; font-size: 2.5rem; margin-bottom: 20px;">Empieza a cerrar más ventas.</h2>
+                    <p style="color: var(--text-muted); font-size: 1.15rem; margin-bottom: 32px;">No dejes que las relaciones con tus clientes se vayan si alguien de tu equipo renuncia. Protege tu activo más valioso.</p>
+                    <button onclick="openModal('registerModal')" class="btn btn-main" style="padding: 16px 40px; font-size: 1.1rem;">Crear mi expediente digital</button>
+                </div>
+                <div class="cta-image fade-up delay-200">
+                    <img src="https://plus.unsplash.com/premium_photo-1661574764946-6040f8322541?q=80&w=687&auto=format&fit=crop" alt="Equipo PYME">
+                </div>
+            </div>
+        </section>
+        
+        <footer><p style="color: #666;">&copy; 2026 crmSMART - Filosofía y Tecnología para tu PYME.</p></footer>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 2. APLICACIÓN CRM (Single Page App)        -->
+    <!-- ========================================== -->
+    <div id="crmApp" class="crm-app">
+        <!-- BARRA LATERAL -->
+        <aside class="crm-sidebar">
+            <div>
+                <div class="logo" style="gap: 8px; margin-bottom: 20px;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span style="font-weight: 800; font-size: 1.2rem; color: var(--primary); letter-spacing: -1px;">crm<span style="color: var(--accent-hover);">SMART</span></span>
+                </div>
+                <ul class="crm-nav">
+                    <li class="active" onclick="switchView('contacts', this)"><span>📇</span> CRM Operativo</li>
+                    <li onclick="switchView('chat', this)"><span>🔄</span> Vista 360° & Mensajes</li>
+                    <li onclick="switchView('reports', this)"><span>🧠</span> CRM Analítico</li>
+                    <li onclick="switchView('tasks', this)"><span>🤝</span> CRM Colaborativo</li>
+                    <li onclick="switchView('settings', this)"><span>⚙️</span> Configuración</li>
+                </ul>
+            </div>
+            
+            <div>
+                <!-- Módulo de Copiloto IA -->
+                <div class="crm-ai-widget">
+                    <h4 style="color: var(--accent-hover); margin-bottom: 4px; text-shadow: 0 0 10px rgba(168,85,247,0.3);">✨ Copiloto IA</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">¡Hola <strong id="userNameDisplay" style="color: var(--primary);">Usuario</strong>! Tienes <span id="aiAlertCount" style="color: var(--accent-hover); font-weight: bold;">0</span> seguimientos prioritarios.</p>
+                    <div id="aiSidebarAlerts"></div>
+                </div>
+                <button onclick="logout()" class="btn btn-outline" style="margin-top: 16px; width: 100%; font-size: 0.8rem; padding: 8px 16px; border: none; color: #555; box-shadow: none;">Cerrar sesión</button>
+            </div>
+        </aside>
+
+        <!-- ÁREA PRINCIPAL -->
+        <main class="crm-main">
+            
+            <!-- VISTA: MIS CONTACTOS (Operativo) -->
+            <div id="view-contacts" class="crm-view active">
+                <div class="crm-header">
+                    <div>
+                        <h2 style="margin-bottom: 8px;">Frente de Batalla (CRM Operativo)</h2>
+                        <p style="color: var(--text-muted); margin: 0;">Gestiona tus leads y automatiza el flujo de ventas diario.</p>
+                    </div>
+                    <button onclick="openModal('addContactModal')" class="btn btn-main" style="padding: 12px 24px;">+ Nuevo Expediente</button>
+                </div>
+
+                <div class="crm-controls">
+                    <input type="text" id="searchInput" class="crm-search" placeholder="🔍 Buscar por nombre o empresa..." onkeyup="filterContacts()">
+                    <select class="btn btn-outline" style="appearance: auto; padding: 12px 20px;" id="filterStatus" onchange="filterContacts()">
+                        <option value="all">Todas las etapas</option>
+                        <option value="Lead">Nuevos Leads</option>
+                        <option value="Propuesta">En Propuesta</option>
+                        <option value="Negociación">En Negociación</option>
+                        <option value="Cerrado">Ganados</option>
+                    </select>
+                </div>
+
+                <div class="crm-table-wrapper">
+                    <table class="crm-table">
+                        <thead>
+                            <tr>
+                                <th>Cliente / Expediente</th>
+                                <th>Empresa</th>
+                                <th>Etapa Comercial</th>
+                                <th>Valor ($)</th>
+                                <th>✨ Probabilidad IA</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="crmTableBody">
+                            <!-- JS inyecta filas aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VISTA: REPORTES IA (Analítico) -->
+            <div id="view-reports" class="crm-view">
+                <div class="crm-header">
+                    <div>
+                        <h2 style="margin-bottom: 8px;">El Cerebro (CRM Analítico)</h2>
+                        <p style="color: var(--text-muted); margin: 0;">Identifica patrones de comportamiento y mide la efectividad de tu embudo.</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="generateAIReport()">🔄 Actualizar Análisis</button>
+                </div>
+
+                <div class="ai-insight-box">
+                    <h3 style="color: var(--accent-hover); display: flex; align-items: center; gap: 8px;">🧠 Conclusión de la IA</h3>
+                    <p id="mainAiInsight" style="font-size: 1.1rem; margin-top: 10px; color: var(--text-main);">Analizando el comportamiento histórico de tus clientes...</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Valor Total Activo</h4>
+                        <div class="value" id="statTotalValue">$0</div>
+                        <p style="font-size: 0.8rem; color: #4ade80; margin: 8px 0 0;">↑ Basado en patrones de compra</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Expedientes en Gestión</h4>
+                        <div class="value" id="statTotalLeads">0</div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 8px 0 0;">Visión general</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Churn Rate (Abandono)</h4>
+                        <div class="value" style="color: #f87171;" id="statChurnRate">12%</div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 8px 0 0;">Calculado por la IA</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA: TAREAS (Colaborativo) -->
+            <div id="view-tasks" class="crm-view">
+                <div class="crm-header">
+                    <div>
+                        <h2 style="margin-bottom: 8px;">El Puente (CRM Colaborativo)</h2>
+                        <p style="color: var(--text-muted); margin: 0;">Garantiza que toda la empresa fluya y hable con una sola voz.</p>
+                    </div>
+                </div>
+                <div class="crm-table-wrapper" style="padding: 30px;">
+                    <h4 style="margin-top:0; color:var(--primary);">Acciones y Notificaciones de Departamentos</h4>
+                    <ul style="list-style: none; padding: 0; margin: 15px 0 0 0;" id="taskList">
+                        <!-- JS inyecta tareas aquí -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- VISTA: VISTA 360 Y CHAT -->
+            <div id="view-chat" class="crm-view">
+                <div class="crm-header">
+                    <div>
+                        <h2 style="margin-bottom: 8px;">Vista 360° & Mensajes</h2>
+                        <p style="color: var(--text-muted); margin: 0;">El expediente digital eterno. Accede al historial completo e interactúa sin salir del sistema.</p>
+                    </div>
+                </div>
+                
+                <div class="chat-layout">
+                    <!-- Columna 1: Lista -->
+                    <div class="chat-sidebar">
+                        <div class="chat-sidebar-header">
+                            <input type="text" id="chatSearchInput" class="crm-search" placeholder="Buscar expediente..." onkeyup="filterChatList()" style="width: 100%; box-sizing: border-box;">
+                        </div>
+                        <div class="chat-list" id="chatContactList"></div>
+                    </div>
+                    
+                    <!-- Columna 2: Chat y Redacción -->
+                    <div class="chat-main" id="chatMainArea">
+                        <div style="flex-grow:1; display:flex; align-items:center; justify-content:center; color: var(--text-muted); flex-direction: column; gap: 16px; text-align: center;">
+                            <span style="font-size: 3rem; opacity: 0.5;">🔄</span>
+                            <p style="font-weight: 500;">Selecciona un cliente para abrir su Vista 360°</p>
+                        </div>
+                    </div>
+
+                    <!-- Columna 3: Perfil 360 -->
+                    <div class="profile-360" id="profile360Area" style="display: none;">
+                        <div class="profile-360-header">
+                            <div class="avatar profile-360-avatar" id="p360Avatar">XX</div>
+                            <h3 style="margin-bottom: 4px;" id="p360Name">Nombre</h3>
+                            <span class="badge" id="p360Status">Estado</span>
+                        </div>
+                        
+                        <div class="profile-section">
+                            <h4>🏢 Detalles de Contacto</h4>
+                            <div class="profile-data-row"><span class="profile-data-icon">💼</span> <span id="p360Company">Empresa</span></div>
+                            <div class="profile-data-row"><span class="profile-data-icon">📱</span> <span id="p360Phone">Teléfono</span></div>
+                            <div class="profile-data-row"><span class="profile-data-icon">💰</span> <span>Valor: $<span id="p360Value" style="color: #86efac;">0</span></span></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h4>⭐ Preferencias Personales</h4>
+                            <div class="profile-data-row" style="align-items: flex-start;">
+                                <span class="profile-data-icon">🧠</span> 
+                                <span style="font-size: 0.85rem; color: var(--text-muted);" id="p360Preferences">La IA detecta que este cliente prefiere interacciones directas y rápidas.</span>
+                            </div>
+                        </div>
+
+                        <div class="profile-section" style="border-bottom: none;">
+                            <h4>🛒 Historial e Interacciones</h4>
+                            <ul style="padding-left: 20px; margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="p360History">
+                                <li>Expediente creado recientemente.</li>
+                                <li>No hay quejas de soporte registradas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA: CONFIGURACIÓN -->
+            <div id="view-settings" class="crm-view">
+                <div class="crm-header">
+                    <div>
+                        <h2 style="margin-bottom: 8px;">Configuración de la Cuenta</h2>
+                        <p style="color: var(--text-muted); margin: 0;">Administra tu perfil, preferencias del sistema y privacidad.</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; gap: 24px; max-width: 800px;">
+                    <!-- Panel de Perfil -->
+                    <div class="stat-card" style="text-align: left; padding: 32px;">
+                        <h3 style="margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; color: var(--primary);">👤 Información del Perfil</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>Nombre del Usuario</label>
+                                <input type="text" id="settingProfileName" disabled style="opacity: 0.7; cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label>Rol en la Empresa</label>
+                                <input type="text" value="Administrador Principal" disabled style="opacity: 0.7; cursor: not-allowed;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Plan Actual</label>
+                            <div style="padding: 12px 16px; border: 1px solid var(--accent); background: var(--accent-light); border-radius: var(--radius-sm); color: var(--accent-hover); font-weight: 500; display: flex; justify-content: space-between; align-items: center;">
+                                <span>🚀 Plan Freemium (MVP)</span>
+                                <button class="btn btn-main" style="padding: 6px 12px; font-size: 0.8rem;">Mejorar Plan</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preferencias del Sistema -->
+                    <div class="stat-card" style="text-align: left; padding: 32px;">
+                        <h3 style="margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; color: var(--primary);">⚙️ Preferencias del Sistema</h3>
+                        <div class="checkbox-group" style="margin-bottom: 16px;">
+                            <input type="checkbox" id="prefNotifications" checked>
+                            <label for="prefNotifications">Recibir alertas de la IA en mi correo electrónico</label>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 16px;">
+                            <input type="checkbox" id="prefDarkTheme" checked disabled>
+                            <label for="prefDarkTheme">Forzar Modo Oscuro (Predeterminado)</label>
+                        </div>
+                        <button class="btn btn-outline" onclick="showToast('Preferencias guardadas con éxito', '✅')">Guardar Preferencias</button>
+                    </div>
+
+                    <!-- Zona de Peligro -->
+                    <div class="stat-card" style="text-align: left; padding: 32px; border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.02);">
+                        <h3 style="margin-bottom: 16px; color: #f87171;">⚠️ Zona de Peligro</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">Una vez que elimines tu cuenta, todos tus expedientes digitales, historiales de chat y análisis de la IA se borrarán permanentemente. Esta acción no se puede deshacer.</p>
+                        <button class="btn btn-danger" onclick="openModal('deleteAccountModal')">Eliminar mi cuenta permanentemente</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. MODALES DE FORMULARIOS Y ALERTAS        -->
+    <!-- ========================================== -->
+
+    <!-- Modal: Registro / Solicitud -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('registerModal')">&times;</span>
+            <h3 style="color: var(--primary);">Comenzar en crmSMART</h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;">Configura el sistema nervioso central de tu negocio.</p>
+            
+            <div class="social-login-group">
+                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Google')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Registrarse con Google
+                </button>
+                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Facebook')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Registrarse con Facebook
+                </button>
+            </div>
+            
+            <div class="divider">o regístrate con tu correo</div>
+
+            <form id="leadForm">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="regName" placeholder="Ej. Juan Pérez" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="regEmail" placeholder="juan@empresa.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de la Empresa</label>
+                    <input type="text" id="regCompany" placeholder="Ej. Comercializadora ABC" required>
+                </div>
+                <div class="form-group">
+                    <label>Crea una Contraseña</label>
+                    <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres" required minlength="8">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="regRemember" checked>
+                    <label for="regRemember">Mantener sesión iniciada en este navegador</label>
+                </div>
+                <button type="submit" class="btn btn-main" style="width:100%;">Crear mi expediente digital</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Login -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
+            <h3 style="color: var(--primary);">Iniciar Sesión</h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;">Bienvenido de nuevo a tu copiloto de ventas.</p>
+            
+            <div class="social-login-group">
+                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Google')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Ingresar con Google
+                </button>
+                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Facebook')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Ingresar con Facebook
+                </button>
+            </div>
+            
+            <div class="divider">o ingresa con tu correo</div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="logEmail" placeholder="tu@empresa.com" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="margin:0;">Contraseña</label>
+                        <a class="text-link" onclick="closeModal('loginModal'); openModal('forgotPasswordModal')">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <input type="password" id="logPassword" placeholder="••••••••" required>
+                </div>
+                <div class="form-group checkbox-group" style="margin-top: 16px;">
+                    <input type="checkbox" id="logRemember" checked>
+                    <label for="logRemember">Recordar mi sesión</label>
+                </div>
+                <button type="submit" class="btn btn-main" style="width:100%; margin-top:10px;">Entrar al CRM</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Recuperar Contraseña -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('forgotPasswordModal')">&times;</span>
+            <h3 style="color: var(--primary);">Recuperar Contraseña</h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;">Ingresa el correo asociado a tu cuenta y te enviaremos un enlace para crear una nueva contraseña.</p>
+            
+            <form id="forgotPasswordForm">
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="recoveryEmail" placeholder="tu@empresa.com" required>
+                </div>
+                <button type="submit" class="btn btn-main" style="width:100%; margin-top:10px;">Enviar enlace de recuperación</button>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a class="text-link" onclick="closeModal('forgotPasswordModal'); openModal('loginModal')">← Volver al inicio de sesión</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nuevo Contacto CRM -->
+    <div class="modal-overlay" id="addContactModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('addContactModal')">&times;</span>
+            <h3 style="color: var(--primary);">Nuevo Expediente 360°</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">Toda la información de este cliente vivirá aquí eternamente.</p>
+            
+            <form id="addContactForm">
+                <div class="form-group">
+                    <label>Nombre del Cliente</label>
+                    <input type="text" id="newContactName" placeholder="Ej. Andrés Silva" required>
+                </div>
+                <div class="form-group">
+                    <label>Empresa</label>
+                    <input type="text" id="newContactCompany" placeholder="Ej. Soluciones S.A." required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono (WhatsApp)</label>
+                    <input type="tel" id="newContactPhone" placeholder="Ej. 573001234567" required>
+                </div>
+                <div class="form-group">
+                    <label>Valor de Oportunidad ($)</label>
+                    <input type="number" id="newContactValue" placeholder="Ej. 1500" required>
+                </div>
+                <div class="form-group">
+                    <label>Etapa Inicial</label>
+                    <select id="newContactStatus">
+                        <option value="Lead">1. Nuevo Lead</option>
+                        <option value="Propuesta">2. Propuesta Enviada</option>
+                        <option value="Negociación">3. En Negociación</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Preferencias y Notas Previas (Opcional)</label>
+                    <textarea id="newContactPrefs" rows="2" placeholder="Ej. Prefiere que lo llamen por las mañanas..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-main" style="width:100%; margin-top:10px;">Guardar Expediente</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Eliminar Cuenta (Feedback) -->
+    <div class="modal-overlay" id="deleteAccountModal">
+        <div class="modal-content" id="deleteAccountContent">
+            <span class="close-modal" onclick="closeModal('deleteAccountModal')">&times;</span>
+            <h3 style="color: #f87171;">Lamentamos verte partir</h3>
+            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Ayúdanos a mejorar. ¿Por qué deseas abandonar crmSMART?</p>
+            
+            <form id="deleteAccountForm">
+                <div class="form-group">
+                    <label>Razón Principal (Obligatorio)</label>
+                    <select required style="color: var(--text-main);">
+                        <option value="" disabled selected>Selecciona una opción...</option>
+                        <option value="price">Es muy costoso / No tengo presupuesto</option>
+                        <option value="complex">Es muy complejo de usar</option>
+                        <option value="features">Faltan integraciones o características que necesito</option>
+                        <option value="buggy">Experimenté demasiados errores</option>
+                        <option value="other">Otra razón</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cuéntanos un poco más (Opcional)</label>
+                    <textarea rows="3" placeholder="¿Qué podríamos haber hecho mejor?"></textarea>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 32px;">
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('deleteAccountModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-danger" style="flex: 1;">Confirmar Eliminación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toastIcon">✨</span>
+        <span id="toastMessage">Operación exitosa</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4. LÓGICA JAVASCRIPT Y MOTOR IA            -->
+    <!-- ========================================== -->
+    <script>
+        /* --- CONFIGURACIÓN DE GEMINI API --- */
+        const apiKey = ""; 
+
+        async function fetchWithRetry(url, options, retries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
+            }
+        }
+
+        async function callGeminiAPI(prompt, systemInstruction = "Eres un experto en ventas B2B y asesoramiento.") {
+            if (!apiKey) return null; 
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: systemInstruction }] }
+                })
+            };
+
+            try {
+                const data = await fetchWithRetry(url, options);
+                return data.candidates?.[0]?.content?.parts?.[0]?.text;
+            } catch (e) {
+                console.error("Gemini API Error:", e);
+                return null;
+            }
+        }
+
+        /* --- ESTADO Y DATOS DEL CRM --- */
+        let currentUser = null;
+        let crmData = [];
+
+        // Datos con array de "messages" incluido para guardar el historial de chat real
+        const defaultData = [
+            { id: 1, name: "Laura Gómez", company: "Inversiones Andes", phone: "573001234567", value: 15000, status: "Negociación", lastTouch: "Hoy", prefs: "Prefiere reuniones presenciales. Solo llamar en la tarde.", history: ["25/03/2026 - Solicitó demo del producto B", "10/02/2026 - Ticket de soporte resuelto"], messages: [{text: "¡Hola! Me gustaría tener más información sobre sus servicios.", sender: "incoming", time: "Ayer"}] },
+            { id: 2, name: "Carlos Ruiz", company: "TecnoSoluciones", phone: "573111234567", value: 5500, status: "Propuesta", lastTouch: "Hace 3 días", prefs: "No le gustan las llamadas, prefiere todo por correo o WhatsApp.", history: ["01/03/2026 - Cotización enviada"], messages: [{text: "Envíame la propuesta por favor.", sender: "incoming", time: "Hace 3 días"}] },
+            { id: 3, name: "María Peña", company: "Panadería Central", phone: "573221234567", value: 1200, status: "Cerrado", lastTouch: "Ayer", prefs: "Decisiones rápidas. Cero burocracia.", history: ["15/01/2026 - Compra exitosa", "20/01/2026 - Devolución parcial (resuelto por soporte)"], messages: [] }
+        ];
+
+        /* --- INICIALIZACIÓN --- */
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedUser = localStorage.getItem('crmSMART_user');
+            if (savedUser) loginToApp(savedUser);
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -50px 0px',
+                threshold: 0.1
+            };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        });
+
+        /* --- CONTROL DE MODALES Y VISTAS --- */
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) event.target.style.display = "none";
+        }
+
+        function switchView(viewId, element) {
+            document.querySelectorAll('.crm-view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            
+            document.querySelectorAll('.crm-nav li').forEach(li => li.classList.remove('active'));
+            element.classList.add('active');
+
+            if(viewId === 'reports') generateAIReport();
+            if(viewId === 'tasks') generateTasks();
+            if(viewId === 'chat') renderChatList();
+        }
+
+        function showToast(message, icon = "✨") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = message;
+            document.getElementById('toastIcon').innerText = icon;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        /* --- LÓGICA DE REGISTRO / LOGIN --- */
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzB-q03AwjSmzTYD1lPFfEgrQD7LmMAWqRKZPqHedNmEvrYxsA-dkJWWK-LqwCsfC3nKg/exec';
+
+        // Lógica de Registro (Correo y Contraseña)
+        document.getElementById('leadForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = "Preparando entorno..."; btn.disabled = true;
+
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const company = document.getElementById('regCompany').value;
+            const password = document.getElementById('regPassword').value;
+            const firstName = name.split(' ')[0];
+            const remember = document.getElementById('regRemember').checked;
+
+            // 1. Guardar la cuenta simulando una base de datos local
+            const accountData = {
+                name: name,
+                email: email,
+                company: company,
+                password: password // En producción real esto iría encriptado (Hash)
+            };
+            localStorage.setItem('crmSMART_account', JSON.stringify(accountData));
+
+            const formData = new FormData();
+            formData.append('nombre', name);
+            formData.append('email', email);
+            formData.append('empresa', company);
+            fetch(scriptURL, { method: 'POST', body: formData }).catch(e => console.log(e));
+
+            setTimeout(() => {
+                closeModal('registerModal');
+                if (remember) localStorage.setItem('crmSMART_user', firstName);
+                loginToApp(firstName);
+                showToast("¡Expediente digital y cuenta listos!", "✅");
+                btn.innerText = "Crear mi expediente digital"; btn.disabled = false;
+            }, 1000);
+        });
+
+        // Lógica de Inicio de Sesión
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('logEmail').value;
+            const passwordInput = document.getElementById('logPassword').value;
+            const remember = document.getElementById('logRemember').checked;
+            
+            // 2. Verificar credenciales contra la base de datos local
+            const savedAccountJSON = localStorage.getItem('crmSMART_account');
+            
+            if (!savedAccountJSON) {
+                showToast("No se encontró ninguna cuenta con este correo.", "❌");
+                return; // Bloquea el inicio de sesión
+            }
+
+            const savedAccount = JSON.parse(savedAccountJSON);
+
+            if (savedAccount.email !== emailInput || savedAccount.password !== passwordInput) {
+                showToast("Correo o contraseña incorrectos.", "❌");
+                return; // Bloquea el inicio de sesión
+            }
+            
+            // Si la validación es exitosa:
+            const firstName = savedAccount.name.split(' ')[0];
+            closeModal('loginModal');
+            
+            if (remember) {
+                localStorage.setItem('crmSMART_user', firstName);
+            } else {
+                localStorage.removeItem('crmSMART_user');
+            }
+            
+            loginToApp(firstName);
+            showToast("¡Bienvenido de nuevo!", "👋");
+        });
+
+        // Simulación de Inicio de Sesión Social (Google/Facebook)
+        function mockSocialLogin(provider) {
+            showToast(`Conectando de forma segura con ${provider}...`, "🔒");
+            
+            // Cerramos cualquier modal abierto
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+            
+            setTimeout(() => {
+                const userName = `Usuario ${provider}`;
+                localStorage.setItem('crmSMART_user', userName); // Por defecto lo recordamos
+                loginToApp(userName);
+                showToast(`Autenticado exitosamente vía ${provider}`, "✅");
+            }, 1500);
+        }
+
+        // Lógica de Recuperación de Contraseña
+        document.getElementById('forgotPasswordForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            
+            btn.innerText = "Enviando enlace...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                closeModal('forgotPasswordModal');
+                showToast("Enlace de recuperación enviado a tu correo.", "📧");
+                btn.innerText = originalText;
+                btn.disabled = false;
+                e.target.reset();
+            }, 1200);
+        });
+
+        function loginToApp(userName) {
+            currentUser = userName;
+            document.getElementById('landingPage').style.display = 'none';
+            document.body.style.overflow = 'hidden';
+            
+            const app = document.getElementById('crmApp');
+            app.style.display = 'grid';
+            document.getElementById('userNameDisplay').innerText = userName;
+
+            const settingsNameInput = document.getElementById('settingProfileName');
+            if(settingsNameInput) settingsNameInput.value = userName;
+            
+            setTimeout(() => app.style.opacity = '1', 50);
+            loadCRMData(); 
+        }
+
+        function logout() {
+            localStorage.removeItem('crmSMART_user');
+            window.location.reload();
+        }
+
+        /* --- MOTOR PRINCIPAL DEL CRM --- */
+        function loadCRMData() {
+            const savedData = localStorage.getItem('crmSMART_data');
+            if (savedData) crmData = JSON.parse(savedData);
+            else { crmData = [...defaultData]; saveData(); }
+            renderTable(); runAIEngine();
+        }
+
+        function saveData() { localStorage.setItem('crmSMART_data', JSON.stringify(crmData)); }
+
+        function calculateAIProbability(contact) {
+            if (contact.status === 'Cerrado') return 100;
+            let score = 20; 
+            if (contact.status === 'Negociación') score += 50;
+            if (contact.status === 'Propuesta') score += 30;
+            if (contact.status === 'Lead') score += 10;
+            if (contact.value > 10000) score += 15;
+            else if (contact.value > 2000) score += 10;
+            score += Math.floor(Math.random() * 10); 
+            return Math.min(score, 98); 
+        }
+
+        function getStatusColor(status) {
+            if(status === 'Cerrado') return 'badge-won';
+            if(status === 'Negociación') return 'badge-warm';
+            return 'badge-cold';
+        }
+
+        function renderTable(dataToRender = crmData) {
+            const tbody = document.getElementById('crmTableBody');
+            tbody.innerHTML = '';
+
+            dataToRender.forEach(contact => {
+                const initials = contact.name.substring(0,2).toUpperCase();
+                const prob = calculateAIProbability(contact);
+                const probColor = prob > 70 ? 'var(--accent-hover)' : (prob > 40 ? '#fde047' : '#9ca3af');
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="avatar">${initials}</span><strong style="color: var(--primary);">${contact.name}</strong></td>
+                    <td style="color: var(--text-muted);">${contact.company}</td>
+                    <td>
+                        <select class="status-select ${getStatusColor(contact.status)}" onchange="updateStatus(${contact.id}, this.value)">
+                            <option value="Lead" ${contact.status==='Lead'?'selected':''}>Lead</option>
+                            <option value="Propuesta" ${contact.status==='Propuesta'?'selected':''}>Propuesta</option>
+                            <option value="Negociación" ${contact.status==='Negociación'?'selected':''}>Negociación</option>
+                            <option value="Cerrado" ${contact.status==='Cerrado'?'selected':''}>Cerrado</option>
+                        </select>
+                    </td>
+                    <td style="font-weight: 600; color: #86efac;">$${contact.value.toLocaleString()}</td>
+                    <td>
+                        <div class="ai-score">
+                            <div class="ai-score-bar"><div class="ai-score-fill" style="width: ${prob}%; background: ${probColor}; box-shadow: 0 0 10px ${probColor};"></div></div>
+                            <span style="color: ${probColor}">${prob}%</span>
+                        </div>
+                    </td>
+                    <td><button onclick="deleteContact(${contact.id})" class="btn btn-danger" style="padding: 6px 10px; font-size: 0.8rem;">🗑️</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('addContactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const prefs = document.getElementById('newContactPrefs').value || "Sin preferencias registradas.";
+            
+            const newContact = {
+                id: Date.now(),
+                name: document.getElementById('newContactName').value,
+                company: document.getElementById('newContactCompany').value,
+                phone: document.getElementById('newContactPhone').value,
+                value: parseInt(document.getElementById('newContactValue').value),
+                status: document.getElementById('newContactStatus').value,
+                prefs: prefs,
+                history: [`${new Date().toLocaleDateString()} - Expediente creado en el sistema.`],
+                messages: [], // Array vacío para guardar los chats futuros
+                lastTouch: "Justo ahora"
+            };
+            
+            crmData.unshift(newContact); 
+            saveData(); renderTable(); runAIEngine();
+            closeModal('addContactModal'); e.target.reset();
+            showToast("Expediente creado en la base de datos.");
+        });
+
+        function updateStatus(id, newStatus) {
+            const contact = crmData.find(c => c.id === id);
+            if(contact) {
+                contact.status = newStatus;
+                contact.lastTouch = "Actualizado hoy";
+                contact.history.unshift(`${new Date().toLocaleDateString()} - Etapa cambiada a ${newStatus}`);
+                saveData(); renderTable(); runAIEngine();
+                showToast(`Estado de ${contact.name} actualizado`);
+            }
+        }
+
+        function deleteContact(id) {
+            if(confirm("¿Seguro que deseas eliminar este expediente corporativo?")) {
+                crmData = crmData.filter(c => c.id !== id);
+                saveData(); renderTable(); runAIEngine();
+            }
+        }
+
+        function filterContacts() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value;
+            const filtered = crmData.filter(c => {
+                const matchesText = c.name.toLowerCase().includes(term) || c.company.toLowerCase().includes(term);
+                const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
+                return matchesText && matchesStatus;
+            });
+            renderTable(filtered);
+        }
+
+        /* --- MÓDULOS DE IA Y REPORTES --- */
+        function runAIEngine() {
+            const sidebarAlerts = document.getElementById('aiSidebarAlerts');
+            sidebarAlerts.innerHTML = '';
+            
+            const hotLeads = crmData.filter(c => calculateAIProbability(c) > 75 && c.status !== 'Cerrado');
+            
+            if (hotLeads.length > 0) {
+                const topLead = hotLeads[0];
+                sidebarAlerts.innerHTML += `
+                    <div class="ai-alert">
+                        <strong style="color: var(--primary);">🔥 Prioridad Alta</strong><br>
+                        <span style="color: var(--text-muted);">${topLead.company} tiene alta probabilidad de cierre basado en su histórico.</span>
+                    </div>
+                `;
+            } else {
+                 sidebarAlerts.innerHTML += `
+                    <div class="ai-alert">
+                        <strong style="color: var(--primary);">👀 Analizando...</strong><br>
+                        <span style="color: var(--text-muted);">La información fluye. Te avisaré cuando detecte patrones de compra.</span>
+                    </div>
+                `;
+            }
+
+            const alertCountEl = document.getElementById('aiAlertCount');
+            if (alertCountEl) alertCountEl.innerText = hotLeads.length;
+        }
+
+        async function generateAIReport() {
+            showToast("Gemini está analizando tu embudo...", "🧠");
+            
+            let totalValue = 0; let activeLeads = 0; let bigFish = null;
+
+            crmData.forEach(c => {
+                if(c.status !== 'Cerrado') {
+                    totalValue += c.value; activeLeads++;
+                    if(!bigFish || c.value > bigFish.value) bigFish = c;
+                }
+            });
+
+            const churnRate = Math.max(0, 12 - Math.floor(activeLeads / 2));
+
+            document.getElementById('statTotalValue').innerText = "$" + totalValue.toLocaleString();
+            document.getElementById('statTotalLeads').innerText = activeLeads;
+            document.getElementById('statChurnRate').innerText = churnRate + "%";
+
+            const insightEl = document.getElementById('mainAiInsight');
+            
+            if(activeLeads === 0) {
+                insightEl.innerHTML = "No hay datos suficientes para que Gemini encuentre patrones. Añade expedientes.";
+                return;
+            }
+            
+            insightEl.innerHTML = `<span style="display:inline-flex; align-items:center; gap:8px; color:var(--accent-hover);"><span class="pulse-glow" style="width:10px; height:10px; border-radius:50%; background:var(--accent);"></span> Gemini está elaborando tu estrategia...</span>`;
+
+            const prompt = `Tengo un CRM con los siguientes datos actuales: Tengo ${activeLeads} prospectos activos en mi embudo. El valor total potencial es de $${totalValue}. Mi mayor oportunidad actualmente es con la empresa ${bigFish ? bigFish.company + ' por $' + bigFish.value + ' (en etapa de ' + bigFish.status + ')' : 'ninguna'}. Dame un consejo estratégico, directivo y motivacional de no más de 3 oraciones sobre qué debería hacer hoy mi equipo de ventas.`;
+            
+            const aiResponse = await callGeminiAPI(prompt, "Eres el Director de Estrategia de Ventas impulsado por IA de crmSMART.");
+
+            if (aiResponse) {
+                insightEl.innerHTML = aiResponse.replace(/\n/g, '<br>');
+                showToast("Análisis estratégico de Gemini completado.", "✨");
+            } else {
+                insightEl.innerHTML = `(Sin API Key) Tu mayor oportunidad actual es <strong style="color: var(--primary);">${bigFish?.company}</strong> por <span style="color: #86efac;">$${bigFish?.value.toLocaleString()}</span>. Históricamente, este tipo de empresas reaccionan mejor a llamadas directas. Concéntrate en la etapa de "${bigFish?.status}".`;
+            }
+        }
+
+        function generateTasks() {
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+            const pending = crmData.filter(c => c.status !== 'Cerrado');
+            
+            if(pending.length === 0) {
+                list.innerHTML = '<li style="padding: 20px; text-align:center; color: var(--text-muted);">Sincronización completa. Todos los departamentos están alineados.</li>';
+                return;
+            }
+
+            pending.forEach((c) => {
+                let taskText = ""; let priority = "";
+                if(c.status === 'Lead') { taskText = `<strong style="color: var(--accent-hover);">[Marketing]</strong> Enviar campaña de nutrición por correo a ${c.name} (${c.company})`; priority = "Normal"; }
+                if(c.status === 'Propuesta') { taskText = `<strong style="color: #60a5fa;">[Ventas]</strong> Hacer llamada para revisión de cotización con ${c.name}`; priority = "Alta"; }
+                if(c.status === 'Negociación') { taskText = `<strong style="color: #f87171;">[Legal/Gerencia]</strong> Revisión y aprobación de contrato final para ${c.company}`; priority = "Urgente"; }
+
+                list.innerHTML += `
+                    <li style="padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer;" onchange="this.parentElement.parentElement.style.opacity = '0.4'; this.disabled = true;">
+                            <span style="color: var(--text-main);">${taskText}</span>
+                        </div>
+                        <span class="badge ${priority==='Urgente'?'badge-warm':'badge-cold'}">${priority}</span>
+                    </li>
+                `;
+            });
+        }
+
+        /* --- MÓDULO DE VISTA 360° Y CHAT --- */
+        function renderChatList() {
+            const term = document.getElementById('chatSearchInput')?.value.toLowerCase() || '';
+            const list = document.getElementById('chatContactList');
+            list.innerHTML = '';
+            
+            const filtered = crmData.filter(c => c.name.toLowerCase().includes(term) || c.company.toLowerCase().includes(term));
+            
+            if(filtered.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align:center; color: var(--text-muted); font-size: 0.9rem;">No se encontraron expedientes.</div>';
+                return;
+            }
+
+            filtered.forEach(contact => {
+                const initials = contact.name.substring(0,2).toUpperCase();
+                list.innerHTML += `
+                    <div class="chat-item" id="chat-item-${contact.id}" onclick="openChat(${contact.id})">
+                        <span class="avatar" style="margin:0; width: 40px; height: 40px;">${initials}</span>
+                        <div style="flex-grow: 1; overflow: hidden;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <strong style="font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main);">${contact.name}</strong>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${contact.company} • ${contact.status}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterChatList() { renderChatList(); }
+
+        function openChat(contactId) {
+            const contact = crmData.find(c => c.id === contactId);
+            if(!contact) return;
+            
+            document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
+            const activeItem = document.getElementById(`chat-item-${contactId}`);
+            if(activeItem) activeItem.classList.add('active');
+            
+            document.getElementById('profile360Area').style.display = 'flex';
+            document.getElementById('p360Avatar').innerText = contact.name.substring(0,2).toUpperCase();
+            document.getElementById('p360Name').innerText = contact.name;
+            document.getElementById('p360Status').innerText = contact.status;
+            document.getElementById('p360Status').className = `badge ${getStatusColor(contact.status)}`;
+            document.getElementById('p360Company').innerText = contact.company;
+            document.getElementById('p360Phone').innerText = contact.phone || "No registrado";
+            document.getElementById('p360Value').innerText = contact.value.toLocaleString();
+            document.getElementById('p360Preferences').innerText = contact.prefs || "Sin preferencias especiales detectadas.";
+            
+            const historyHtml = contact.history && contact.history.length > 0 
+                ? contact.history.map(h => `<li>${h}</li>`).join('') 
+                : "<li>Expediente sin historial previo.</li>";
+            document.getElementById('p360History').innerHTML = historyHtml;
+            
+            // Generar las burbujas de chat guardadas
+            let chatBubblesHtml = '';
+            if (contact.messages && contact.messages.length > 0) {
+                contact.messages.forEach(m => {
+                    chatBubblesHtml += `
+                        <div class="chat-bubble ${m.sender}" style="animation: fadeIn 0.3s ease;">
+                            ${m.text.replace(/\n/g, '<br>')}
+                            <div style="font-size: 0.65rem; text-align: right; opacity: 0.7; margin-top: 6px;">
+                                ${m.time} ${m.sender === 'outgoing' ? '✓✓' : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                chatBubblesHtml = `
+                    <div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Aún no hay mensajes. Envía el primero para iniciar el historial.</div>
+                `;
+            }
+            
+            const main = document.getElementById('chatMainArea');
+            main.innerHTML = `
+                <div class="chat-header">
+                    <div>
+                        <h4 style="margin:0; font-size:1.05rem; color: var(--primary);">Historial de Mensajes</h4>
+                        <span style="font-size:0.85rem; color:var(--text-muted);">Sincronizado con base de datos local</span>
+                    </div>
+                </div>
+                <div class="chat-history" id="chatHistoryContainer">
+                    <div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">La IA sincronizó las interacciones con ${contact.company}</div>
+                    ${chatBubblesHtml}
+                </div>
+                <div class="chat-input-area">
+                    <div class="ai-chat-suggestion" id="btnGeminiChat-${contact.id}" onclick="generateWhatsAppWithGemini(${contact.id})">
+                        ✨ Redactar WhatsApp con Gemini IA
+                    </div>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <input type="text" id="whatsappMsg" class="crm-search" placeholder="Escribe un mensaje o pídele a Gemini que lo redacte..." style="margin:0; flex-grow:1;">
+                        <button class="btn btn-main" style="padding: 12px 24px; border-radius: var(--radius-sm); white-space: nowrap; box-shadow: 0 4px 15px var(--accent-glow);" onclick="sendWhatsApp('${contact.phone}')">
+                            Enviar WhatsApp ↗
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function generateWhatsAppWithGemini(contactId) {
+            const contact = crmData.find(c => c.id === contactId);
+            const inputField = document.getElementById('whatsappMsg');
+            const btn = document.getElementById(`btnGeminiChat-${contactId}`);
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `⏳ Redactando...`;
+            btn.style.opacity = "0.7";
+            btn.style.pointerEvents = "none";
+
+            const prompt = `Escribe un mensaje corto de WhatsApp para un cliente llamado ${contact.name} de la empresa ${contact.company}. 
+            La etapa de venta actual es "${contact.status}". 
+            Sus preferencias guardadas en el CRM son: "${contact.prefs}". 
+            Mantén el tono altamente profesional pero cercano, empático y persuasivo, ideal para leerse en WhatsApp. 
+            No uses marcadores de posición genéricos (como [Tu Nombre]), invéntate los detalles si faltan o firma de parte de "Tu equipo de crmSMART". Sé muy directo (1 o 2 párrafos máximo) e incluye un emoji sutil.`;
+
+            const geminiResponse = await callGeminiAPI(prompt, "Eres un redactor experto en cierres de ventas por WhatsApp.");
+
+            if (geminiResponse) {
+                inputField.value = geminiResponse.trim();
+                btn.innerHTML = "✨ ¡Mensaje generado por Gemini!";
+                showToast("Mensaje de WhatsApp creado con IA", "✨");
+            } else {
+                let fallbackMsg = `Hola ${contact.name.split(' ')[0]}, `;
+                if(contact.status === 'Lead') fallbackMsg += "¡gracias por tu interés! ¿Cuándo tendrías disponibilidad para una breve llamada?";
+                else if(contact.status === 'Propuesta') fallbackMsg += "te escribo para saber si pudiste revisar la propuesta. ¡Quedo atento!";
+                else if(contact.status === 'Negociación') fallbackMsg += "¿tienes alguna duda adicional sobre el contrato para proceder con la firma?";
+                else fallbackMsg += "¡gracias por confiar en nosotros! Seguimos a tu disposición.";
+                
+                inputField.value = fallbackMsg;
+                btn.innerHTML = "⚠️ API Key requerida (Usando plantilla)";
+            }
+
+            btn.style.opacity = "1";
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.pointerEvents = "auto";
+            }, 3000);
+        }
+
+        // Función para enviar a WhatsApp real y guardar el chat
+        function sendWhatsApp(phone) {
+            const msgInput = document.getElementById('whatsappMsg');
+            const msg = msgInput?.value || '';
+            
+            if(!phone || phone === 'undefined' || phone.trim() === '') {
+                showToast("Este expediente no tiene un teléfono válido.", "⚠️");
+                return;
+            }
+            if(msg.trim() === '') {
+                showToast("Escribe un mensaje antes de enviar.", "⚠️");
+                return;
+            }
+
+            // 1. Enviar el mensaje a la persona real abriendo WhatsApp Web o App
+            const cleanPhone = phone.replace(/\D/g,'');
+            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank'); // Esto envía el mensaje en la vida real
+
+            // 2. Limpiar el input
+            msgInput.value = '';
+            
+            // 3. Guardar en el historial y burbujas del cliente permanentemente
+            const activeItem = document.querySelector('.chat-item.active');
+            if(activeItem) {
+                const id = parseInt(activeItem.id.replace('chat-item-', ''));
+                const contact = crmData.find(c => c.id === id);
+                
+                if(contact) {
+                    // Inicializar si no existe
+                    if(!contact.messages) contact.messages = [];
+                    
+                    // Guardar la burbuja de chat
+                    contact.messages.push({
+                        text: msg,
+                        sender: 'outgoing',
+                        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                    });
+
+                    // Guardamos el log en el expediente 360
+                    contact.history.unshift(`${new Date().toLocaleDateString()} - WhatsApp Enviado: "${msg.substring(0, 30)}..."`);
+                    
+                    // Guardar en LocalStorage para que no se borre al actualizar
+                    saveData();
+                    
+                    // Actualizamos la vista recargando el chat
+                    openChat(id);
+                    
+                    // Forzar scroll al fondo para ver el nuevo mensaje
+                    setTimeout(() => {
+                        const chatContainer = document.getElementById('chatHistoryContainer');
+                        if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }, 50);
+                }
+            }
+            showToast("Abriendo WhatsApp y guardando conversación...", "✅");
+        }
+
+        // Formulario de Eliminación de Cuenta
+        document.getElementById('deleteAccountForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = "Eliminando..."; 
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const modalContent = document.getElementById('deleteAccountContent');
+                modalContent.innerHTML = `
+                    <div style="text-align: center; padding: 30px 10px;">
+                        <span style="font-size: 4rem; display: block; margin-bottom: 20px;">🤝</span>
+                        <h3 style="color: var(--primary); font-size: 1.8rem; margin-bottom: 16px;">¡Gracias por tu tiempo!</h3>
+                        <p style="color: var(--text-muted); font-size: 1.05rem;">Hemos tomado nota de tus valiosos comentarios. Trabajaremos duro para seguir mejorando. Esperamos verte pronto de regreso en crmSMART.</p>
+                        <p style="color: var(--accent); margin-top: 20px; font-size: 0.85rem;">Cerrando sesión de forma segura...</p>
+                    </div>
+                `;
+
+                // Borrar absolutamente todos los datos
+                localStorage.removeItem('crmSMART_user');
+                localStorage.removeItem('crmSMART_data');
+                localStorage.removeItem('crmSMART_account'); // Eliminar credenciales de la cuenta
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 4500); 
+            }, 1200);
+        });
+    </script>
+</body>
+</html>
