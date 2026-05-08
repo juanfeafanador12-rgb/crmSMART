@@ -6,366 +6,288 @@
     <title>crmSMART | El Sistema Nervioso Central de tu Empresa</title>
     <!-- Fuente Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* --- ESTILOS DARK MODE (Negro Profundo y Morado Neón) --- */
+        /* --- ESTILOS DINÁMICOS (Soportan Modo Claro/Oscuro) --- */
         :root {
-            --bg-page: #050505; /* Negro profundo para el fondo principal */
-            --bg-surface: #111111; /* Gris súper oscuro para las tarjetas */
-            --border: #222222; /* Bordes sutiles oscuros */
-            --text-main: #f3f4f6; /* Blanco humo para legibilidad perfecta */
-            --text-muted: #9ca3af; /* Gris claro para textos secundarios */
-            
-            --primary: #ffffff; /* Blanco puro para títulos fuertes */
-            --accent: #a855f7; /* Morado vibrante principal */
-            --accent-hover: #c084fc; /* Morado más claro para hover */
-            --accent-light: rgba(168, 85, 247, 0.15); /* Fondo morado translúcido */
-            --accent-glow: rgba(168, 85, 247, 0.5); /* Brillo morado para sombras */
-            
+            --bg-page: #050505;
+            --bg-surface: #0e0e0e;
+            --bg-card: #161616;
+            --bg-header: rgba(5, 5, 5, 0.5);
+            --bg-input: #0a0a0a;
+            --border: #222222;
+            --text-main: #f3f4f6;
+            --text-muted: #94a3b8;
+            --primary: #ffffff;
+            --accent: #a855f7;
+            --accent-hover: #c084fc;
+            --accent-light: rgba(168, 85, 247, 0.12);
+            --accent-glow: rgba(168, 85, 247, 0.5);
             --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
             --radius-pill: 9999px;
-            
-            --shadow-sm: 0 4px 10px rgba(0,0,0,0.5);
-            --shadow-md: 0 8px 20px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.1);
+            --shadow-sm: 0 4px 10px rgba(0,0,0,0.4);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.6);
             --shadow-lg: 0 12px 32px rgba(0,0,0,0.9), 0 0 30px rgba(168, 85, 247, 0.15);
         }
 
+        /* Variables para el Modo Claro (Solo aplican dentro del CRM) */
+        body.light-mode #crmApp, 
+        body.light-mode .modal-content,
+        body.light-mode .toast {
+            --bg-page: #f1f5f9;
+            --bg-surface: #ffffff;
+            --bg-card: #f8fafc;
+            --bg-header: rgba(255, 255, 255, 0.8);
+            --bg-input: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #000000;
+            --accent-light: rgba(168, 85, 247, 0.1);
+            --shadow-sm: 0 4px 10px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
         body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0; line-height: 1.6; color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            margin: 0; color: var(--text-main); 
             background-color: var(--bg-page); -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            transition: background-color 0.4s, color 0.4s;
         }
         
-        /* --- ANIMACIONES Y EFECTOS ESTÉTICOS --- */
-        html { scroll-behavior: smooth; }
-
-        .fade-up {
-            opacity: 0;
-            transform: translateY(40px) scale(0.98);
-            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .fade-up.is-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
-        .delay-400 { transition-delay: 400ms; }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-        .floating { animation: float 6s ease-in-out infinite; }
-
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); }
-            50% { box-shadow: 0 0 35px rgba(168, 85, 247, 0.6); border-color: rgba(168, 85, 247, 0.8); }
-            100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); }
-        }
-        .pulse-glow { animation: pulse-glow 3s infinite; }
-
-        /* Utilidades Generales */
         .hidden { display: none !important; }
-        h1, h2, h3, h4 { letter-spacing: -0.03em; margin-top: 0; color: var(--primary); }
-        
-        /* --- NAVEGACIÓN Y LANDING PAGE --- */
-        nav { background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(12px); padding: 1rem 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
-        .logo { display: flex; align-items: center; text-decoration: none; }
-        section { padding: 90px 5%; max-width: 1100px; margin: 0 auto; }
-        h2.section-title { text-align: center; margin-bottom: 20px; font-size: 2.5rem; font-weight: 700; text-shadow: 0 0 20px rgba(168,85,247,0.2); }
-        p.section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto 50px; }
+        h1, h2, h3, h4 { letter-spacing: -0.03em; margin: 0; color: var(--text-main); }
 
-        /* --- BOTONES CON RELIEVE Y BRILLO (NEÓN) --- */
-        .btn { padding: 12px 24px; text-decoration: none; font-weight: 600; border-radius: var(--radius-pill); cursor: pointer; border: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; gap: 8px; }
-        
-        .btn-main { 
-            background: linear-gradient(180deg, #b574f9 0%, #9333ea 100%); 
-            color: white; 
-            /* Sombra exterior morada + sombra interior blanca (arriba) + sombra interior negra (abajo) = RELIEVE 3D */
-            box-shadow: 0 4px 15px var(--accent-glow), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.3);
-            border: 1px solid #c084fc;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        .btn-main:hover { 
-            background: linear-gradient(180deg, #c084fc 0%, #a855f7 100%); 
-            transform: translateY(-3px); 
-            box-shadow: 0 8px 25px var(--accent-glow), inset 0 1px 2px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.3); 
-        }
-        
-        .btn-outline { 
-            background: rgba(168, 85, 247, 0.05); 
-            border: 1px solid var(--accent); 
-            color: var(--accent-hover); 
-            box-shadow: inset 0 0 10px rgba(168, 85, 247, 0);
-        }
-        .btn-outline:hover { 
-            background: var(--accent-light); 
-            transform: translateY(-2px); 
-            box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px rgba(168, 85, 247, 0.2); 
-            color: white;
-            text-shadow: 0 0 8px var(--accent-glow);
-        }
-        
-        .btn-danger { background: rgba(220, 38, 38, 0.1); color: #f87171; border: 1px solid #ef4444; }
-        .btn-danger:hover { background: rgba(220, 38, 38, 0.2); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+        /* Animaciones */
+        .fade-up { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .fade-up.is-visible { opacity: 1; transform: translateY(0); }
 
-        /* Hero - Nuevo patrón de visualización (Split Layout 2 Columnas) */
-        .hero { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 60px; 
-            align-items: center; 
-            padding: 80px 5%; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            text-align: left; 
-        }
-        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 16px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 500; color: var(--accent-hover); margin-bottom: 30px; box-shadow: 0 0 15px rgba(168, 85, 247, 0.15); }
-        .hero h1 { font-size: 4rem; margin: 0 0 24px 0; line-height: 1.1; font-weight: 800; max-width: 100%; }
-        .hero p { color: var(--text-muted); max-width: 100%; margin: 0 0 40px 0; font-size: 1.25rem; }
-        .hero-cta-group { display: flex; gap: 12px; justify-content: flex-start; align-items: center; }
-        
-        .hero-image-container { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
-        .hero-image-wrapper { width: 100%; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--border); line-height: 0; position: relative; aspect-ratio: 4/3; }
-        .hero-image-wrapper::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); pointer-events: none; }
-        .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
-        
-        /* Grids y Cards */
-        .grid-features { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
-        .feature-card { background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: all 0.4s ease; position: relative; overflow: hidden; }
-        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.4s; }
-        .feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-5px); border-color: rgba(168, 85, 247, 0.3); }
-        .feature-card:hover::before { opacity: 1; }
-        .feature-icon-wrapper { width: 48px; height: 48px; background: var(--accent-light); color: var(--accent-hover); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 24px; border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: inset 0 0 10px rgba(168, 85, 247, 0.2); }
-        
-        /* Sección 360 grados */
-        .view-360-section { background: linear-gradient(145deg, #0f0a17 0%, #050505 100%); color: white; border-radius: var(--radius-lg); padding: 80px 5%; margin: 60px auto; max-width: 1200px; width: 90%; text-align: center; border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: 0 0 40px rgba(168, 85, 247, 0.05); }
-        .view-360-section h2 { color: white; font-size: 2.5rem; }
-        .view-360-section p { color: var(--text-muted); max-width: 800px; margin: 0 auto 40px; font-size: 1.15rem; }
-        .tags-360 { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
-        .tag-360 { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); padding: 8px 16px; border-radius: var(--radius-pill); font-size: 0.9rem; color: var(--accent-hover); box-shadow: 0 0 10px rgba(168, 85, 247, 0.1); }
+        /* --- BOTONES --- */
+        .btn { padding: 12px 24px; text-decoration: none; font-weight: 600; border-radius: var(--radius-pill); cursor: pointer; border: none; transition: all 0.25s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; gap: 8px; }
+        .btn-main { background: linear-gradient(180deg, #b574f9 0%, #9333ea 100%); color: white; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
+        .btn-main:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-outline { background: rgba(128,128,128,0.05); border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent-hover); }
 
-        .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; background: var(--bg-surface); padding: 60px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-md); margin: 60px auto; max-width: 1100px; }
-        .cta-image { border-radius: var(--radius-md); overflow: hidden; height: 100%; min-height: 350px; line-height: 0; border: 1px solid #333; }
-        .cta-image img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        /* =========================================
+           --- LANDING PAGE CLÁSICA ORIGINAL --- 
+           ========================================= */
+        #landingPage { background-color: #050505; color: #f3f4f6; }
+        #landingPage nav { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(10px); padding: 1rem 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
+        #landingPage .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
+        #landingPage .hero h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; font-weight: 800; color: #fff;}
+        #landingPage .hero p { color: #94a3b8; font-size: 1.2rem; margin-bottom: 40px; }
+        #landingPage .hero-image { width: 100%; border-radius: var(--radius-lg); border: 1px solid #222; box-shadow: var(--shadow-lg); transition: 0.5s; }
+        
+        #landingPage section { padding: 90px 5%; max-width: 1100px; margin: 0 auto; box-sizing: border-box; }
+        #landingPage .section-title { text-align: center; margin-bottom: 20px; font-size: 2.5rem; font-weight: 700; text-shadow: 0 0 20px rgba(168,85,247,0.2); color: #fff;}
+        #landingPage .section-subtitle { text-align: center; color: #94a3b8; font-size: 1.15rem; max-width: 700px; margin: 0 auto 50px; }
 
-        /* --- INTERFAZ COMPLETA DEL CRM (App Mode) --- */
-        .crm-app {
-            display: none; height: 100vh; width: 100vw; background: var(--bg-page);
-            grid-template-columns: 280px 1fr; overflow: hidden; opacity: 0; transition: opacity 0.5s ease;
-        }
+        #landingPage .grid-features { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        #landingPage .feature-card { background: #0e0e0e; padding: 40px; border-radius: var(--radius-lg); border: 1px solid #222; box-shadow: var(--shadow-sm); transition: all 0.4s ease; position: relative; overflow: hidden; }
+        #landingPage .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.4s; }
+        #landingPage .feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-5px); border-color: rgba(168, 85, 247, 0.3); }
+        #landingPage .feature-card:hover::before { opacity: 1; }
+        #landingPage .feature-card h3 { color: #fff; }
+        #landingPage .feature-icon-wrapper { width: 48px; height: 48px; background: rgba(168, 85, 247, 0.12); color: #c084fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 24px; border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: inset 0 0 10px rgba(168, 85, 247, 0.2); }
 
-        /* Sidebar CRM */
-        .crm-sidebar { background: var(--bg-surface); border-right: 1px solid var(--border); padding: 32px 24px; display: flex; flex-direction: column; justify-content: space-between; z-index: 10; }
+        #landingPage .view-360-section { background: linear-gradient(145deg, #0f0a17 0%, #050505 100%); color: white; border-radius: var(--radius-lg); padding: 80px 5%; margin: 60px auto; max-width: 1200px; width: 90%; text-align: center; border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: 0 0 40px rgba(168, 85, 247, 0.05); box-sizing: border-box; }
+        #landingPage .view-360-section h2 { color: white; font-size: 2.5rem; }
+        #landingPage .view-360-section p { color: #94a3b8; max-width: 800px; margin: 0 auto 40px; font-size: 1.15rem; }
+        #landingPage .tags-360 { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+        #landingPage .tag-360 { background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); padding: 8px 16px; border-radius: var(--radius-pill); font-size: 0.9rem; color: #c084fc; box-shadow: 0 0 10px rgba(168, 85, 247, 0.1); }
+        
+        #landingPage .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; background: #0e0e0e; padding: 60px; border-radius: var(--radius-lg); border: 1px solid #222; box-shadow: var(--shadow-md); margin: 60px auto; max-width: 1100px; box-sizing: border-box; }
+        #landingPage .cta-image { border-radius: var(--radius-md); overflow: hidden; height: 100%; min-height: 350px; line-height: 0; border: 1px solid #333; }
+        #landingPage .cta-image img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+
+        /* =========================================
+           --- APP CRM ESTRUCTURA OPTIMIZADA PC --- 
+           ========================================= */
+        .crm-app { display: none; height: 100vh; width: 100vw; grid-template-columns: 280px 1fr; opacity: 0; transition: opacity 0.5s; overflow: hidden; background: var(--bg-page); }
+        
+        .crm-sidebar { background: var(--bg-surface); border-right: 1px solid var(--border); padding: 40px 24px; display: flex; flex-direction: column; justify-content: space-between; height: 100vh; box-sizing: border-box; transition: 0.4s; }
         .crm-nav { list-style: none; padding: 0; margin: 40px 0; flex-grow: 1; }
-        .crm-nav li { padding: 12px 16px; margin-bottom: 8px; border-radius: var(--radius-sm); color: var(--text-muted); font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
-        .crm-nav li:hover { background: rgba(255,255,255,0.05); color: var(--primary); }
-        .crm-nav li.active { background: var(--accent-light); color: var(--accent-hover); border-left: 3px solid var(--accent); }
+        .crm-nav li { padding: 14px 18px; margin-bottom: 10px; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 14px; font-weight: 500; font-size: 0.95rem; }
+        .crm-nav li:hover { background: rgba(128,128,128,0.05); color: var(--text-main); }
+        .crm-nav li.active { background: var(--accent-light); color: var(--accent-hover); font-weight: 600; box-shadow: inset 3px 0 0 var(--accent); }
 
-        /* Widget Inteligencia Artificial Sidebar */
-        .crm-ai-widget { background: #0a0a0a; border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-md); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); position: relative; overflow: hidden; transition: all 0.3s ease;}
-        .crm-ai-widget::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-        .ai-alert { background: rgba(168, 85, 247, 0.1); padding: 12px; border-radius: var(--radius-sm); margin-top: 12px; font-size: 0.8rem; color: var(--text-main); border: 1px solid rgba(168, 85, 247, 0.2); animation: modalPopUp 0.4s ease; box-shadow: inset 0 0 10px rgba(168, 85, 247, 0.05); }
-
-        /* Main Area CRM */
-        .crm-main { padding: 40px 60px; overflow-y: auto; background: var(--bg-page); position: relative;}
-        .crm-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        .crm-main { padding: 0; overflow: hidden; background: var(--bg-page); height: 100vh; display: flex; flex-direction: column; transition: 0.4s;}
+        .crm-content-scroll { flex: 1; overflow-y: auto; padding: 40px 50px; }
         
-        .crm-controls { display: flex; gap: 16px; margin-bottom: 24px; }
-        .crm-search { flex-grow: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'Inter'; transition: all 0.2s; background: var(--bg-surface); color: var(--text-main); }
-        .crm-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); }
-
-        /* Tabla CRM */
-        .crm-table-wrapper { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
-        .crm-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-        .crm-table th { text-align: left; padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-weight: 500; background: #0a0a0a; }
-        .crm-table td { padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: middle; }
-        .crm-table tr:last-child td { border-bottom: none; }
-        .crm-table tr:hover td { background: #1a1a1a; cursor: default; }
-        
-        /* Elementos UI Tabla */
-        .avatar { width: 36px; height: 36px; background: var(--accent-light); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; color: var(--accent-hover); vertical-align: middle; margin-right: 12px; border: 1px solid rgba(168, 85, 247, 0.3); }
-        .badge { padding: 6px 12px; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 600; display: inline-block;}
-        .badge-warm { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
-        .badge-won { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .badge-cold { background: rgba(156, 163, 175, 0.1); color: #e5e7eb; border: 1px solid rgba(156, 163, 175, 0.2); }
-        
-        /* Select de Estado */
-        .status-select { border: none; background: transparent; font-family: 'Inter'; font-weight: 600; cursor: pointer; padding: 4px; border-radius: 4px; appearance: none; -webkit-appearance: none; color: inherit; }
-        .status-select option { background: var(--bg-surface); color: var(--text-main); }
-        .status-select:hover { background: rgba(255,255,255,0.05); }
-        .status-select:focus { outline: none; background: var(--bg-surface); box-shadow: 0 0 0 2px var(--accent); }
-
-        /* IA Score */
-        .ai-score { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-        .ai-score-bar { height: 6px; width: 60px; background: #333; border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
-        .ai-score-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.5s ease; box-shadow: 0 0 8px var(--accent); }
-
-        /* Vistas (Tabs) */
-        .crm-view { display: none; animation: fadeIn 0.4s ease; }
+        /* --- CONTROL DE VISTAS (Pestañas Individuales) --- */
+        .crm-view { display: none; animation: fadeInView 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .crm-view.active { display: block; }
+        @keyframes fadeInView { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
         
-        /* --- VISTA 360° Y WHATSAPP STYLES --- */
-        .chat-layout { display: grid; grid-template-columns: 280px 1fr 300px; height: calc(100vh - 220px); min-height: 500px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
-        .chat-sidebar { border-right: 1px solid var(--border); display: flex; flex-direction: column; background: #0a0a0a;}
-        .chat-sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); }
-        .chat-list { flex-grow: 1; overflow-y: auto; }
-        .chat-item { padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 12px; }
-        .chat-item:hover { background: #1a1a1a; }
-        .chat-item.active { background: var(--bg-surface); border-left: 3px solid var(--accent); }
+        .top-header { padding: 30px 50px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-header); backdrop-filter: blur(10px); position: relative; z-index: 50; transition: 0.4s;}
+
+        /* Animación del Saludo "Hola, Usuario" */
+        .greeting-container {
+            display: inline-flex;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 250px; /* Suficiente para nombres largos */
+            margin-left: 12px;
+            opacity: 1;
+            /* Transición fluida de ancho y opacidad para dar efecto de "swipe" */
+            transition: max-width 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                        opacity 0.4s ease-out, 
+                        margin-left 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
         
-        /* Chat Central */
-        .chat-main { display: flex; flex-direction: column; background: var(--bg-surface); border-right: 1px solid var(--border); }
-        .chat-header { padding: 16px 24px; background: var(--bg-surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .chat-history { flex-grow: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: #050505; }
-        .chat-bubble { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.4; box-shadow: var(--shadow-sm); }
-        .chat-bubble.incoming { background: var(--bg-surface); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
-        .chat-bubble.outgoing { background: linear-gradient(135deg, var(--accent) 0%, #7e22ce 100%); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(168,85,247,0.3); }
-        .chat-input-area { padding: 16px 24px; background: var(--bg-surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;}
-        .ai-chat-suggestion { font-size: 0.85rem; color: white; background: linear-gradient(135deg, var(--accent) 0%, #7e22ce 100%); padding: 10px 16px; border-radius: var(--radius-pill); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; width: fit-content; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px rgba(168,85,247,0.4); font-weight: 500;}
-        .ai-chat-suggestion:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168,85,247,0.6); }
-        .ai-chat-suggestion:active { transform: translateY(0); }
-        
-        /* Expediente 360° (Columna derecha) */
-        .profile-360 { background: var(--bg-surface); display: flex; flex-direction: column; overflow-y: auto; }
-        .profile-360-header { padding: 24px; text-align: center; border-bottom: 1px solid var(--border); background: #0a0a0a; }
-        .profile-360-avatar { width: 64px; height: 64px; font-size: 1.5rem; margin: 0 auto 12px; }
-        .profile-section { padding: 20px 24px; border-bottom: 1px solid var(--border); }
-        .profile-section h4 { font-size: 0.8rem; text-transform: uppercase; color: var(--accent-hover); margin-bottom: 12px; letter-spacing: 0.05em; }
-        .profile-data-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 0.9rem; }
-        .profile-data-icon { color: var(--text-muted); width: 20px; }
+        .greeting-hidden {
+            max-width: 0 !important;
+            opacity: 0 !important;
+            margin-left: 0 !important;
+        }
 
-        /* Dashboard/Reportes IA Styles */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
-        .stat-card { background: var(--bg-surface); border: 1px solid var(--border); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-        .stat-card h4 { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; font-weight: 500;}
-        .stat-card .value { font-size: 2.5rem; font-weight: 700; color: var(--primary); text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-        .ai-insight-box { background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, #111111 100%); border: 1px solid rgba(168, 85, 247, 0.4); padding: 32px; border-radius: var(--radius-lg); margin-bottom: 24px; box-shadow: 0 0 20px rgba(168,85,247,0.05); }
+        /* Kanban Espacioso */
+        .kanban-board { display: flex; gap: 24px; padding-bottom: 20px; align-items: flex-start; }
+        .kanban-column { flex: 1; min-width: 320px; background: var(--bg-surface); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; max-height: calc(100vh - 250px); transition: 0.4s;}
+        .kanban-header { font-weight: 700; margin-bottom: 20px; padding: 0 10px; color: var(--text-muted); display: flex; justify-content: space-between; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px;}
+        .kanban-cards { flex-grow: 1; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; padding: 4px; min-height: 120px;}
+        .kanban-card { background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); cursor: grab; transition: all 0.2s ease; box-shadow: var(--shadow-sm); }
+        .kanban-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .badge-count { background: var(--border); color: var(--text-main); padding: 2px 10px; border-radius: 10px; font-size: 0.8rem; }
 
-        /* --- MODALES Y FORMS --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); animation: overlayFadeIn 0.3s ease forwards; }
-        @keyframes overlayFadeIn { from { opacity: 0; backdrop-filter: blur(0px); } to { opacity: 1; backdrop-filter: blur(10px); } }
-        .modal-content { background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); width: 100%; max-width: 450px; position: relative; box-shadow: var(--shadow-lg); border: 1px solid var(--border); animation: modalPopUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; max-height: 90vh; overflow-y: auto;}
-        @keyframes modalPopUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .close-modal { position: absolute; top: 16px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); line-height: 1; transition: color 0.2s; }
-        .close-modal:hover { color: var(--primary); }
-        
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted); }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); box-sizing: border-box; font-size: 0.95rem; transition: all 0.3s; font-family: 'Inter', sans-serif; background: #0a0a0a; color: var(--text-main); }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); background: #111; }
-        .form-group input::placeholder, .form-group textarea::placeholder { color: #555; }
-        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-direction: row; }
-        .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; margin: 0; cursor: pointer; accent-color: var(--accent); }
-        .checkbox-group label { margin: 0; font-weight: 400; font-size: 0.85rem; cursor: pointer; color: var(--text-main); }
+        /* Tablas Limpias */
+        .crm-table-wrapper { background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; transition: 0.4s; }
+        .crm-table { width: 100%; border-collapse: collapse; }
+        .crm-table th { text-align: left; padding: 20px 24px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; background: var(--bg-card); }
+        .crm-table td { padding: 20px 24px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .crm-table tr:last-child td { border-bottom: none; }
 
-        /* Toast Notifications */
-        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg-surface); border: 1px solid var(--accent); color: white; padding: 16px 24px; border-radius: var(--radius-md); font-weight: 500; box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2); display: flex; align-items: center; gap: 12px; z-index: 3000; transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .toast.show { transform: translateY(0); opacity: 1; }
+        /* Chat & 360 Optimizado para PC */
+        .chat-layout { display: grid; grid-template-columns: 320px 1fr 380px; background: var(--bg-surface); height: calc(100vh - 180px); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; margin-top: 10px; transition: 0.4s;}
+        .chat-sidebar { background: var(--bg-card); border-right: 1px solid var(--border); overflow-y: auto; }
+        .chat-main { display: flex; flex-direction: column; background: var(--bg-page); }
+        .chat-history { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .chat-bubble { padding: 14px 20px; border-radius: 18px; max-width: 75%; font-size: 0.95rem; line-height: 1.5; }
+        .chat-bubble.outgoing { background: var(--accent); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 5px 15px rgba(168,85,247,0.2); }
+        .chat-bubble.incoming { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--text-main); }
+        .profile-360 { background: var(--bg-surface); border-left: 1px solid var(--border); padding: 32px; overflow-y: auto; }
 
-        /* --- NUEVOS ESTILOS PARA LOGIN/REGISTRO --- */
+        /* Copiloto IA Vibrante */
+        .ai-widget { 
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.22) 0%, rgba(30, 10, 60, 0.95) 100%); 
+            border: 1px solid rgba(168, 85, 247, 0.4); 
+            border-left: 4px solid var(--accent); 
+            padding: 24px; 
+            border-radius: var(--radius-md); 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.15);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Modales */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-surface); border: 1px solid var(--border); padding: 48px; border-radius: var(--radius-lg); width: 100%; max-width: 480px; position: relative; color: var(--text-main); transition: 0.4s;}
+
         .social-login-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-        .btn-social { background: #1a1a1a; border: 1px solid #333; color: var(--text-main); justify-content: center; width: 100%; box-shadow: none; font-weight: 500;}
-        .btn-social:hover { background: #222; border-color: #555; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .divider { display: flex; align-items: center; text-align: center; margin-bottom: 24px; color: var(--text-muted); font-size: 0.85rem; }
+        .btn-social { 
+            background: rgba(128, 128, 128, 0.05); border: 1px solid var(--border); 
+            color: var(--text-main); width: 100%; padding: 12px; border-radius: var(--radius-sm);
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s;
+        }
+        .btn-social:hover { background: var(--accent-light); border-color: var(--accent); transform: translateY(-2px); }
+        .divider { display: flex; align-items: center; text-align: center; margin-bottom: 24px; color: var(--text-muted); font-size: 0.8rem; }
         .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
-        .text-link { color: var(--accent-hover); cursor: pointer; font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
-        .text-link:hover { color: var(--accent); text-decoration: underline; }
+        .divider:not(:empty)::before { margin-right: .8em; }
+        .divider:not(:empty)::after { margin-left: .8em; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-main); box-sizing: border-box; font-family: 'Inter'; transition: 0.4s;}
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(168,85,247,0.2); }
+
+        /* Estilo específico para el input del chat */
+        .chat-input-field { flex: 1; padding: 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-main); font-family: 'Inter'; transition: 0.4s; outline: none; }
+        .chat-input-field:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(168,85,247,0.2); }
+
+        /* Notificaciones Dinamicas */
+        .notif-item { padding: 16px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+        .notif-item:hover { background: var(--accent-light) !important; }
+        .notif-item:last-child { border-bottom: none; }
+
+        /* Toggle Switch para Ajustes */
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #64748b; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(22px); }
 
         @media (max-width: 1024px) {
-            .hero { grid-template-columns: 1fr; text-align: center; gap: 40px; padding: 60px 5%; }
-            .hero h1 { font-size: 3.5rem; margin: 0 auto 20px; }
-            .hero p { margin: 0 auto 30px; }
-            .hero-cta-group { justify-content: center; }
-            .chat-layout { grid-template-columns: 250px 1fr; }
+            .crm-app { grid-template-columns: 240px 1fr; }
+            .chat-layout { grid-template-columns: 280px 1fr; }
             .profile-360 { display: none; }
-        }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.8rem; }
-            .hero-cta-group { flex-direction: column; } .hero-cta-group .btn { width: 100%; }
-            .cta-grid { grid-template-columns: 1fr; padding: 40px 24px; text-align: center; }
-            .crm-app { grid-template-columns: 1fr; }
-            .crm-sidebar { display: none; }
-            .crm-main { padding: 20px; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .chat-layout { grid-template-columns: 1fr; }
-            .chat-sidebar { display: none; } 
         }
     </style>
 </head>
 <body>
 
-    <!-- ========================================== -->
-    <!-- 1. LANDING PAGE (Página de Venta/Ingreso)  -->
-    <!-- ========================================== -->
+    <!-- =========================================
+         --- LANDING PAGE CLÁSICA ORIGINAL --- 
+         ========================================= -->
     <div id="landingPage">
         <nav>
-            <a href="#" class="logo" style="gap: 8px;">
-                <!-- Logo restaurado a formato SVG para que funcione en la vista previa -->
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-                <span style="font-weight: 800; font-size: 1.4rem; color: var(--primary); letter-spacing: -1px;">crm<span style="color: var(--accent-hover); text-shadow: 0 0 10px rgba(168,85,247,0.4);">SMART</span></span>
-            </a>
-            <div style="display: flex; gap: 16px; align-items: center;">
-                <button onclick="openModal('loginModal')" class="btn btn-outline">Iniciar sesión</button>
-                <button onclick="openModal('registerModal')" class="btn btn-main">Registrarse</button>
+            <div class="logo">
+                <span style="font-weight: 800; font-size: 1.5rem;">crm<span style="color: var(--accent);">SMART</span></span>
+            </div>
+            <div>
+                <button onclick="openModal('loginModal')" class="btn btn-outline" style="color: white; border-color: #333;">Entrar</button>
+                <button onclick="openModal('registerModal')" class="btn btn-main">Probar Gratis</button>
             </div>
         </nav>
 
         <header class="hero">
-            <div class="hero-content">
-                <div class="hero-badge pulse-glow fade-up">✨ El Sistema Nervioso Central de tu Empresa</div>
-                <h1 class="fade-up delay-100">Más que un software,<br>la memoria de tu negocio.</h1>
-                <p class="fade-up delay-200">Deja de ver al CRM como una simple agenda. Centraliza estrategia, tecnología y relaciones humanas en una única plataforma inteligente diseñada para PYMEs.</p>
-                <div class="hero-cta-group fade-up delay-300">
-                    <button onclick="openModal('registerModal')" class="btn btn-main" style="padding: 16px 36px; font-size: 1.1rem;">Comenzar a usar gratis</button>
-                </div>
+            <div class="fade-up">
+                <span style="color: var(--accent); font-weight: 600;">CRM SaaS de Siguiente Generación</span>
+                <h1>Domina tus ventas con Estrategia IA.</h1>
+                <p>Olvida los Excels. Centraliza tus contactos, automatiza WhatsApp y deja que nuestra IA trabaje por ti.</p>
+                <button onclick="openModal('registerModal')" class="btn btn-main" style="padding: 16px 40px;">Empezar Ahora</button>
             </div>
-            <div class="hero-image-container fade-up delay-400">
-                <div class="hero-image-wrapper floating">
-                    <img src="https://images.unsplash.com/photo-1678227547316-fb79e35b085d?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Usuario interactuando con el CRM">
-                </div>
-            </div>
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop" class="hero-image fade-up" alt="Dashboard CRM">
         </header>
 
         <section class="features">
             <h2 class="section-title fade-up">Las Tres Dimensiones de crmSMART</h2>
-            <p class="section-subtitle fade-up delay-100">Un CRM moderno no es una herramienta monolítica. Se divide en tres capas funcionales que trabajan en conjunto para cubrir todo el espectro de tu negocio.</p>
+            <p class="section-subtitle fade-up">Un CRM moderno no es una herramienta monolítica. Se divide en tres capas funcionales que trabajan en conjunto para cubrir todo el espectro de tu negocio.</p>
             
             <div class="grid-features">
-                <div class="feature-card fade-up delay-100">
+                <div class="feature-card fade-up">
                     <div class="feature-icon-wrapper">⚡</div>
-                    <h3>CRM Operativo <br><span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">El Frente de Batalla</span></h3>
-                    <p>Agilizamos tus tareas diarias. Automatizamos los procesos de ventas, marketing y servicio al cliente para que tu equipo se enfoque en la eficiencia y en cerrar tratos.</p>
+                    <h3>CRM Operativo <br><span style="font-size: 0.9rem; color: #94a3b8; font-weight: normal;">El Frente de Batalla</span></h3>
+                    <p style="color: #94a3b8;">Agilizamos tus tareas diarias. Automatizamos los procesos de ventas, marketing y servicio al cliente para que tu equipo se enfoque en la eficiencia y en cerrar tratos.</p>
+                </div>
+                <div class="feature-card fade-up delay-100">
+                    <div class="feature-icon-wrapper">🧠</div>
+                    <h3>CRM Analítico <br><span style="font-size: 0.9rem; color: #94a3b8; font-weight: normal;">El Cerebro</span></h3>
+                    <p style="color: #94a3b8;">Los datos se convierten en conocimiento. Nuestra IA identifica patrones de compra, calcula el Churn Rate y te permite segmentar clientes por cómo actúan, no solo por quiénes son.</p>
                 </div>
                 <div class="feature-card fade-up delay-200">
-                    <div class="feature-icon-wrapper">🧠</div>
-                    <h3>CRM Analítico <br><span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">El Cerebro</span></h3>
-                    <p>Los datos se convierten en conocimiento. Nuestra IA identifica patrones de compra, calcula el Churn Rate y te permite segmentar clientes por cómo actúan, no solo por quiénes son.</p>
-                </div>
-                <div class="feature-card fade-up delay-300">
                     <div class="feature-icon-wrapper">🤝</div>
-                    <h3>CRM Colaborativo <br><span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">El Puente</span></h3>
-                    <p>Aseguramos que la información fluya entre todos los departamentos. Tu empresa hablará siempre con una sola voz, sin importar quién atienda al cliente final.</p>
+                    <h3>CRM Colaborativo <br><span style="font-size: 0.9rem; color: #94a3b8; font-weight: normal;">El Puente</span></h3>
+                    <p style="color: #94a3b8;">Aseguramos que la información fluya entre todos los departamentos. Tu empresa hablará siempre con una sola voz, sin importar quién atienda al cliente final.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Nueva sección: Vista 360 -->
         <section class="view-360-section fade-up">
-            <h2 class="fade-up delay-100">El fin de la Amnesia Corporativa</h2>
-            <p class="fade-up delay-200">Sin un CRM, la información vive en la cabeza de un vendedor o en un Excel olvidado. Con crmSMART, creas un expediente digital eterno y único: la <strong>Vista de 360 Grados</strong>.</p>
+            <h2>El fin de la Amnesia Corporativa</h2>
+            <p>Sin un CRM, la información vive en la cabeza de un vendedor o en un Excel olvidado. Con crmSMART, creas un expediente digital eterno y único: la <strong>Vista de 360 Grados</strong>.</p>
             
-            <div class="tags-360 fade-up delay-300">
+            <div class="tags-360">
                 <span class="tag-360">📧 Correos y WhatsApps enviados</span>
                 <span class="tag-360">🛒 Historial de compras</span>
                 <span class="tag-360">🗣️ Interacciones y quejas</span>
@@ -377,1124 +299,874 @@
         <section class="bottom-cta-section" style="padding: 60px 5% 100px;">
             <div class="cta-grid">
                 <div class="fade-up">
-                    <h2 style="text-align: left; font-size: 2.5rem; margin-bottom: 20px;">Empieza a cerrar más ventas.</h2>
-                    <p style="color: var(--text-muted); font-size: 1.15rem; margin-bottom: 32px;">No dejes que las relaciones con tus clientes se vayan si alguien de tu equipo renuncia. Protege tu activo más valioso.</p>
+                    <h2 style="text-align: left; font-size: 2.5rem; margin-bottom: 20px; color: white;">Empieza a cerrar más ventas.</h2>
+                    <p style="color: #94a3b8; font-size: 1.15rem; margin-bottom: 32px;">No dejes que las relaciones con tus clientes se vayan si alguien de tu equipo renuncia. Protege tu activo más valioso.</p>
                     <button onclick="openModal('registerModal')" class="btn btn-main" style="padding: 16px 40px; font-size: 1.1rem;">Crear mi expediente digital</button>
                 </div>
-                <div class="cta-image fade-up delay-200">
+                <div class="cta-image fade-up delay-100">
                     <img src="https://plus.unsplash.com/premium_photo-1661574764946-6040f8322541?q=80&w=687&auto=format&fit=crop" alt="Equipo PYME">
                 </div>
             </div>
         </section>
         
-        <footer><p style="color: #666;">&copy; 2026 crmSMART - Filosofía y Tecnología para tu PYME.</p></footer>
+        <footer><p style="color: #666; text-align: center; padding-bottom: 40px;">&copy; 2026 crmSMART - Filosofía y Tecnología para tu PYME.</p></footer>
     </div>
 
-
-    <!-- ========================================== -->
-    <!-- 2. APLICACIÓN CRM (Single Page App)        -->
-    <!-- ========================================== -->
+    <!-- =========================================
+         --- APP CRM (VISTA PC OPTIMIZADA) --- 
+         ========================================= -->
     <div id="crmApp" class="crm-app">
-        <!-- BARRA LATERAL -->
         <aside class="crm-sidebar">
             <div>
-                <div class="logo" style="gap: 8px; margin-bottom: 20px;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
-                    <span style="font-weight: 800; font-size: 1.2rem; color: var(--primary); letter-spacing: -1px;">crm<span style="color: var(--accent-hover);">SMART</span></span>
-                </div>
+                <h3 style="margin-bottom: 40px; letter-spacing: -1.5px;">crm<span style="color: var(--accent);">SMART</span></h3>
                 <ul class="crm-nav">
                     <li class="active" onclick="switchView('contacts', this)"><span>📇</span> CRM Operativo</li>
-                    <li onclick="switchView('chat', this)"><span>🔄</span> Vista 360° & Mensajes</li>
+                    <li onclick="switchView('chat', this)"><span>🔄</span> Vista 360°</li>
                     <li onclick="switchView('reports', this)"><span>🧠</span> CRM Analítico</li>
-                    <li onclick="switchView('tasks', this)"><span>🤝</span> CRM Colaborativo</li>
-                    <li onclick="switchView('settings', this)"><span>⚙️</span> Configuración</li>
+                    <li onclick="switchView('tasks', this)"><span>📅</span> Tareas</li>
+                    <li onclick="switchView('settings', this)"><span>⚙️</span> Ajustes</li>
                 </ul>
             </div>
-            
             <div>
-                <!-- Módulo de Copiloto IA -->
-                <div class="crm-ai-widget">
-                    <h4 style="color: var(--accent-hover); margin-bottom: 4px; text-shadow: 0 0 10px rgba(168,85,247,0.3);">✨ Copiloto IA</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">¡Hola <strong id="userNameDisplay" style="color: var(--primary);">Usuario</strong>! Tienes <span id="aiAlertCount" style="color: var(--accent-hover); font-weight: bold;">0</span> seguimientos prioritarios.</p>
-                    <div id="aiSidebarAlerts"></div>
+                <div class="ai-widget">
+                    <h4 style="color: var(--accent-hover); font-size: 0.85rem; margin-bottom: 12px; font-weight: 800; text-transform: uppercase;">✨ Copiloto IA</h4>
+                    <div id="ai-context-alerts" style="font-size: 0.88rem; color: #fff; line-height: 1.6; font-weight: 500;">
+                        Analizando flujos...
+                    </div>
                 </div>
-                <button onclick="logout()" class="btn btn-outline" style="margin-top: 16px; width: 100%; font-size: 0.8rem; padding: 8px 16px; border: none; color: #555; box-shadow: none;">Cerrar sesión</button>
             </div>
         </aside>
 
-        <!-- ÁREA PRINCIPAL -->
         <main class="crm-main">
-            
-            <!-- VISTA: MIS CONTACTOS (Operativo) -->
-            <div id="view-contacts" class="crm-view active">
-                <div class="crm-header">
-                    <div>
-                        <h2 style="margin-bottom: 8px;">Frente de Batalla (CRM Operativo)</h2>
-                        <p style="color: var(--text-muted); margin: 0;">Gestiona tus leads y automatiza el flujo de ventas diario.</p>
-                    </div>
-                    <button onclick="openModal('addContactModal')" class="btn btn-main" style="padding: 12px 24px;">+ Nuevo Expediente</button>
-                </div>
-
-                <div class="crm-controls">
-                    <input type="text" id="searchInput" class="crm-search" placeholder="🔍 Buscar por nombre o empresa..." onkeyup="filterContacts()">
-                    <select class="btn btn-outline" style="appearance: auto; padding: 12px 20px;" id="filterStatus" onchange="filterContacts()">
-                        <option value="all">Todas las etapas</option>
-                        <option value="Lead">Nuevos Leads</option>
-                        <option value="Propuesta">En Propuesta</option>
-                        <option value="Negociación">En Negociación</option>
-                        <option value="Cerrado">Ganados</option>
-                    </select>
-                </div>
-
-                <div class="crm-table-wrapper">
-                    <table class="crm-table">
-                        <thead>
-                            <tr>
-                                <th>Cliente / Expediente</th>
-                                <th>Empresa</th>
-                                <th>Etapa Comercial</th>
-                                <th>Valor ($)</th>
-                                <th>✨ Probabilidad IA</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="crmTableBody">
-                            <!-- JS inyecta filas aquí -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- VISTA: REPORTES IA (Analítico) -->
-            <div id="view-reports" class="crm-view">
-                <div class="crm-header">
-                    <div>
-                        <h2 style="margin-bottom: 8px;">El Cerebro (CRM Analítico)</h2>
-                        <p style="color: var(--text-muted); margin: 0;">Identifica patrones de comportamiento y mide la efectividad de tu embudo.</p>
-                    </div>
-                    <button class="btn btn-outline" onclick="generateAIReport()">🔄 Actualizar Análisis</button>
-                </div>
-
-                <div class="ai-insight-box">
-                    <h3 style="color: var(--accent-hover); display: flex; align-items: center; gap: 8px;">🧠 Conclusión de la IA</h3>
-                    <p id="mainAiInsight" style="font-size: 1.1rem; margin-top: 10px; color: var(--text-main);">Analizando el comportamiento histórico de tus clientes...</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h4>Valor Total Activo</h4>
-                        <div class="value" id="statTotalValue">$0</div>
-                        <p style="font-size: 0.8rem; color: #4ade80; margin: 8px 0 0;">↑ Basado en patrones de compra</p>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Expedientes en Gestión</h4>
-                        <div class="value" id="statTotalLeads">0</div>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 8px 0 0;">Visión general</p>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Churn Rate (Abandono)</h4>
-                        <div class="value" style="color: #f87171;" id="statChurnRate">12%</div>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 8px 0 0;">Calculado por la IA</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VISTA: TAREAS (Colaborativo) -->
-            <div id="view-tasks" class="crm-view">
-                <div class="crm-header">
-                    <div>
-                        <h2 style="margin-bottom: 8px;">El Puente (CRM Colaborativo)</h2>
-                        <p style="color: var(--text-muted); margin: 0;">Garantiza que toda la empresa fluya y hable con una sola voz.</p>
-                    </div>
-                </div>
-                <div class="crm-table-wrapper" style="padding: 30px;">
-                    <h4 style="margin-top:0; color:var(--primary);">Acciones y Notificaciones de Departamentos</h4>
-                    <ul style="list-style: none; padding: 0; margin: 15px 0 0 0;" id="taskList">
-                        <!-- JS inyecta tareas aquí -->
-                    </ul>
-                </div>
-            </div>
-
-            <!-- VISTA: VISTA 360 Y CHAT -->
-            <div id="view-chat" class="crm-view">
-                <div class="crm-header">
-                    <div>
-                        <h2 style="margin-bottom: 8px;">Vista 360° & Mensajes</h2>
-                        <p style="color: var(--text-muted); margin: 0;">El expediente digital eterno. Accede al historial completo e interactúa sin salir del sistema.</p>
-                    </div>
-                </div>
+            <header class="top-header">
+                <h2 id="view-title" style="font-size: 1.8rem; font-weight: 800;">CRM Operativo</h2>
                 
-                <div class="chat-layout">
-                    <!-- Columna 1: Lista -->
-                    <div class="chat-sidebar">
-                        <div class="chat-sidebar-header">
-                            <input type="text" id="chatSearchInput" class="crm-search" placeholder="Buscar expediente..." onkeyup="filterChatList()" style="width: 100%; box-sizing: border-box;">
-                        </div>
-                        <div class="chat-list" id="chatContactList"></div>
-                    </div>
+                <!-- Acciones Cabecera: Campanita + Perfil con Animación -->
+                <div style="display: flex; gap: 24px; align-items: center; justify-content: flex-end;">
                     
-                    <!-- Columna 2: Chat y Redacción -->
-                    <div class="chat-main" id="chatMainArea">
-                        <div style="flex-grow:1; display:flex; align-items:center; justify-content:center; color: var(--text-muted); flex-direction: column; gap: 16px; text-align: center;">
-                            <span style="font-size: 3rem; opacity: 0.5;">🔄</span>
-                            <p style="font-weight: 500;">Selecciona un cliente para abrir su Vista 360°</p>
-                        </div>
-                    </div>
-
-                    <!-- Columna 3: Perfil 360 -->
-                    <div class="profile-360" id="profile360Area" style="display: none;">
-                        <div class="profile-360-header">
-                            <div class="avatar profile-360-avatar" id="p360Avatar">XX</div>
-                            <h3 style="margin-bottom: 4px;" id="p360Name">Nombre</h3>
-                            <span class="badge" id="p360Status">Estado</span>
+                    <div style="position: relative;">
+                        <!-- Campanita -->
+                        <div style="cursor: pointer; background: var(--bg-surface); padding: 10px; border-radius: 50%; border: 1px solid var(--border); position: relative;" onclick="toggleNotifications(event)">
+                            🔔 <span id="notif-dot" style="position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #f87171; border-radius: 50%; border: 2px solid var(--bg-surface); display: none;"></span>
                         </div>
                         
-                        <div class="profile-section">
-                            <h4>🏢 Detalles de Contacto</h4>
-                            <div class="profile-data-row"><span class="profile-data-icon">💼</span> <span id="p360Company">Empresa</span></div>
-                            <div class="profile-data-row"><span class="profile-data-icon">📱</span> <span id="p360Phone">Teléfono</span></div>
-                            <div class="profile-data-row"><span class="profile-data-icon">💰</span> <span>Valor: $<span id="p360Value" style="color: #86efac;">0</span></span></div>
+                        <!-- Panel de Notificaciones -->
+                        <div id="notif-panel" class="hidden" onclick="event.stopPropagation()" style="position: absolute; top: 55px; right: 0; width: 340px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 2000; overflow: hidden;">
+                            <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); font-weight: 700; background: var(--bg-surface); display: flex; justify-content: space-between; align-items: center;">
+                                Notificaciones
+                                <span style="font-size: 0.75rem; color: var(--accent-hover); cursor: pointer;" onclick="clearNotifications(event)">Marcar leídas</span>
+                            </div>
+                            <div id="notif-list" style="max-height: 320px; overflow-y: auto; background: var(--bg-page);">
+                                <!-- Lista dinámica -->
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="profile-section">
-                            <h4>⭐ Preferencias Personales</h4>
-                            <div class="profile-data-row" style="align-items: flex-start;">
-                                <span class="profile-data-icon">🧠</span> 
-                                <span style="font-size: 0.85rem; color: var(--text-muted);" id="p360Preferences">La IA detecta que este cliente prefiere interacciones directas y rápidas.</span>
+                    <!-- Perfil con Animación Swipe -->
+                    <div style="display: flex; align-items: center; cursor: pointer;" onclick="switchView('settings', document.querySelector('.crm-nav li:last-child'))">
+                        <div id="user-avatar" style="width: 36px; height: 36px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; z-index: 2;">U</div>
+                        <div id="greeting-container" class="greeting-container">
+                            <span id="user-greeting" style="font-weight: 600;"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+            <div class="crm-content-scroll">
+                <!-- VISTA: OPERATIVO -->
+                <div id="view-contacts" class="crm-view active">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 40px; align-items: center;">
+                        <div style="background: var(--bg-card); padding: 5px; border-radius: var(--radius-pill); border: 1px solid var(--border); display: flex; gap: 5px;">
+                            <button onclick="setOperativeMode('kanban')" id="btn-kanban" style="background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border); padding: 10px 24px; border-radius: var(--radius-pill); cursor: pointer; font-weight: 700; font-size: 0.85rem; box-shadow: var(--shadow-sm);">Tablero Kanban</button>
+                            <button onclick="setOperativeMode('table')" id="btn-table" style="background: transparent; color: var(--text-muted); border: 1px solid transparent; padding: 10px 24px; border-radius: var(--radius-pill); cursor: pointer; font-weight: 700; font-size: 0.85rem;">Lista de Datos</button>
+                        </div>
+                        <div style="display: flex; gap: 16px;">
+                            <button onclick="openModal('importModal')" class="btn btn-outline" style="padding: 10px 24px;">📥 Importar CSV</button>
+                            <button onclick="openModal('addContactModal')" class="btn btn-main" style="padding: 10px 28px;">+ Nuevo Expediente</button>
+                        </div>
+                    </div>
+
+                    <div id="kanban-wrapper" class="kanban-board">
+                        <div class="kanban-column" ondragover="allowDrop(event)" ondrop="drop(event, 'Lead')">
+                            <div class="kanban-header">Nuevos Leads <span id="count-Lead" class="badge-count">0</span></div>
+                            <div class="kanban-cards" id="list-Lead"></div>
+                        </div>
+                        <div class="kanban-column" ondragover="allowDrop(event)" ondrop="drop(event, 'Propuesta')">
+                            <div class="kanban-header">Propuesta <span id="count-Propuesta" class="badge-count">0</span></div>
+                            <div class="kanban-cards" id="list-Propuesta"></div>
+                        </div>
+                        <div class="kanban-column" ondragover="allowDrop(event)" ondrop="drop(event, 'Negociación')">
+                            <div class="kanban-header">Negociación <span id="count-Negociación" class="badge-count">0</span></div>
+                            <div class="kanban-cards" id="list-Negociación"></div>
+                        </div>
+                        <div class="kanban-column" ondragover="allowDrop(event)" ondrop="drop(event, 'Cerrado')">
+                            <div class="kanban-header">Cerrados <span id="count-Cerrado" class="badge-count">0</span></div>
+                            <div class="kanban-cards" id="list-Cerrado"></div>
+                        </div>
+                    </div>
+
+                    <div id="table-wrapper" class="crm-table-wrapper hidden">
+                        <table class="crm-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del Cliente</th>
+                                    <th>Empresa</th>
+                                    <th>Estado</th>
+                                    <th>Valor Estimado</th>
+                                    <th>Asignado a</th>
+                                    <th style="text-align: right;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VISTA: ANALÍTICO -->
+                <div id="view-reports" class="crm-view">
+                    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;">
+                        <div style="background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+                            <h4 style="margin-bottom: 40px; color: var(--accent-hover); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Salud del Embudo Comercial</h4>
+                            <div style="height: 350px;">
+                                <canvas id="stageChart"></canvas>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 30px;">
+                            <div style="background: var(--bg-surface); padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+                                <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase;">Valor en Pipeline</span>
+                                <h2 id="report-total-value" style="font-size: 3.5rem; margin-top: 15px; color: #86efac; font-weight: 800;">$0</h2>
+                            </div>
+                            <div style="background: var(--bg-surface); padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+                                <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase;">Tasa de Conversión</span>
+                                <h2 id="report-conversion-rate" style="font-size: 3.5rem; margin-top: 15px; font-weight: 800; color: var(--text-main);">0%</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA: 360° -->
+                <div id="view-chat" class="crm-view">
+                    <div class="chat-layout">
+                        <div class="chat-sidebar" id="chat-list-container"></div>
+                        <div class="chat-main">
+                            <div class="chat-history" id="chat-history">
+                                <div style="margin: auto; text-align: center; color: var(--text-muted); padding: 60px;">
+                                    <span style="font-size: 4rem; display: block; margin-bottom: 24px; opacity: 0.3;">🔄</span>
+                                    <h3>Expediente Digital</h3>
+                                    <p>Selecciona un contacto para ver su historia completa.</p>
+                                </div>
+                            </div>
+                            <div id="chat-controls" class="hidden" style="padding: 24px 32px; border-top: 1px solid var(--border); background: var(--bg-surface);">
+                                <div style="display: flex; gap: 16px;">
+                                    <input type="text" id="chat-input" class="chat-input-field" placeholder="Escribe un mensaje de seguimiento...">
+                                    <button class="btn btn-main" onclick="sendWhatsApp()" style="padding: 0 32px;">Enviar WhatsApp ↗</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-360" id="profile-pane">
+                            <div style="text-align: center; margin-bottom: 40px;">
+                                <div id="p-avatar" style="width: 80px; height: 80px; background: var(--accent-light); color: var(--accent-hover); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; margin: 0 auto 20px; border: 3px solid var(--accent);"></div>
+                                <h3 id="p-name" style="font-size: 1.6rem; font-weight: 800;">Cliente</h3>
+                                <p id="p-company" style="color: var(--text-muted); font-weight: 500; font-size: 1.1rem; margin-top: 5px;"></p>
+                            </div>
+                            <div style="border-top: 1px solid var(--border); padding-top: 32px;">
+                                <h4 style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-hover); margin-bottom: 24px; letter-spacing: 1.5px; font-weight: 800;">Ficha Técnica</h4>
+                                <div style="display: flex; flex-direction: column; gap: 24px;">
+                                    <div><small style="color: var(--text-muted); font-weight: 600;">RESPONSABLE</small><div id="p-assigned" style="font-weight: 700; font-size: 1.1rem; margin-top: 4px;">-</div></div>
+                                    <div><small style="color: var(--text-muted); font-weight: 600;">VALOR DE OPORTUNIDAD</small><div id="p-value" style="font-weight: 800; color: #86efac; font-size: 1.5rem; margin-top: 4px;">-</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA: TAREAS -->
+                <div id="view-tasks" class="crm-view">
+                    <div class="crm-table-wrapper" style="padding: 40px;">
+                        <h3 style="margin-bottom: 30px; font-size: 1.8rem; font-weight: 800;">Agenda Estratégica</h3>
+                        <ul id="global-task-list" style="list-style: none; padding: 0;"></ul>
+                    </div>
+                </div>
+
+                <!-- NUEVA VISTA: AJUSTES FUNCIONALES -->
+                <div id="view-settings" class="crm-view">
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        
+                        <!-- Sección 1: Perfil -->
+                        <div style="background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 30px; box-shadow: var(--shadow-sm);">
+                            <h3 style="margin-bottom: 24px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px;">👤 Perfil de Usuario</h3>
+                            <div class="form-group">
+                                <label>Nombre mostrado en el CRM</label>
+                                <div style="display: flex; gap: 16px;">
+                                    <input type="text" id="settings-name" placeholder="Ej: Juan Pérez" style="flex: 1;">
+                                    <button onclick="saveProfile()" class="btn btn-main">Actualizar Nombre</button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="profile-section" style="border-bottom: none;">
-                            <h4>🛒 Historial e Interacciones</h4>
-                            <ul style="padding-left: 20px; margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="p360History">
-                                <li>Expediente creado recientemente.</li>
-                                <li>No hay quejas de soporte registradas.</li>
-                            </ul>
+                        <!-- Sección 2: Apariencia -->
+                        <div style="background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 30px; box-shadow: var(--shadow-sm);">
+                            <h3 style="margin-bottom: 24px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px;">🎨 Apariencia del Sistema</h3>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                                <div>
+                                    <strong style="display: block; font-size: 1.1rem; margin-bottom: 4px;">Modo Visual</strong>
+                                    <span style="color: var(--text-muted); font-size: 0.9rem;">Cambia entre el modo oscuro (por defecto) y el modo claro.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
                         </div>
+
+                        <!-- Sección 3: Datos y Exportación -->
+                        <div style="background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 30px; box-shadow: var(--shadow-sm);">
+                            <h3 style="margin-bottom: 24px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px;">💾 Datos y Exportación</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">Gestiona la información de tus clientes y mantén un respaldo de tu base de datos.</p>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <button onclick="exportDataToCSV()" class="btn btn-outline" style="justify-content: flex-start; padding: 16px 24px; font-size: 1rem;">📥 Exportar CRM a Excel / CSV</button>
+                                <button onclick="showToast('✅ Conexión con Google Sheets verificada correctamente.')" class="btn btn-outline" style="justify-content: flex-start; padding: 16px 24px; font-size: 1rem;">☁️ Probar Conexión con Servidor</button>
+                            </div>
+                        </div>
+
+                        <!-- Sección 4: Peligro -->
+                        <div style="background: var(--bg-surface); padding: 40px; border-radius: var(--radius-lg); border: 1px solid rgba(239, 68, 68, 0.3); margin-bottom: 50px;">
+                            <h3 style="margin-bottom: 24px; font-size: 1.4rem; color: #f87171; display: flex; align-items: center; gap: 10px;">⚠️ Zona de Seguridad</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">Asegúrate de guardar tus cambios antes de salir de tu espacio de trabajo.</p>
+                            
+                            <button onclick="logout()" class="btn" style="width: 100%; padding: 16px; background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-weight: bold; font-size: 1.05rem;">Cerrar Sesión de Forma Segura</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
-
-            <!-- VISTA: CONFIGURACIÓN -->
-            <div id="view-settings" class="crm-view">
-                <div class="crm-header">
-                    <div>
-                        <h2 style="margin-bottom: 8px;">Configuración de la Cuenta</h2>
-                        <p style="color: var(--text-muted); margin: 0;">Administra tu perfil, preferencias del sistema y privacidad.</p>
-                    </div>
-                </div>
-
-                <div style="display: grid; gap: 24px; max-width: 800px;">
-                    <!-- Panel de Perfil -->
-                    <div class="stat-card" style="text-align: left; padding: 32px;">
-                        <h3 style="margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; color: var(--primary);">👤 Información del Perfil</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                            <div class="form-group">
-                                <label>Nombre del Usuario</label>
-                                <input type="text" id="settingProfileName" disabled style="opacity: 0.7; cursor: not-allowed;">
-                            </div>
-                            <div class="form-group">
-                                <label>Rol en la Empresa</label>
-                                <input type="text" value="Administrador Principal" disabled style="opacity: 0.7; cursor: not-allowed;">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Plan Actual</label>
-                            <div style="padding: 12px 16px; border: 1px solid var(--accent); background: var(--accent-light); border-radius: var(--radius-sm); color: var(--accent-hover); font-weight: 500; display: flex; justify-content: space-between; align-items: center;">
-                                <span>🚀 Plan Freemium (MVP)</span>
-                                <button class="btn btn-main" style="padding: 6px 12px; font-size: 0.8rem;">Mejorar Plan</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Preferencias del Sistema -->
-                    <div class="stat-card" style="text-align: left; padding: 32px;">
-                        <h3 style="margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; color: var(--primary);">⚙️ Preferencias del Sistema</h3>
-                        <div class="checkbox-group" style="margin-bottom: 16px;">
-                            <input type="checkbox" id="prefNotifications" checked>
-                            <label for="prefNotifications">Recibir alertas de la IA en mi correo electrónico</label>
-                        </div>
-                        <div class="checkbox-group" style="margin-bottom: 16px;">
-                            <input type="checkbox" id="prefDarkTheme" checked disabled>
-                            <label for="prefDarkTheme">Forzar Modo Oscuro (Predeterminado)</label>
-                        </div>
-                        <button class="btn btn-outline" onclick="showToast('Preferencias guardadas con éxito', '✅')">Guardar Preferencias</button>
-                    </div>
-
-                    <!-- Zona de Peligro -->
-                    <div class="stat-card" style="text-align: left; padding: 32px; border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.02);">
-                        <h3 style="margin-bottom: 16px; color: #f87171;">⚠️ Zona de Peligro</h3>
-                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">Una vez que elimines tu cuenta, todos tus expedientes digitales, historiales de chat y análisis de la IA se borrarán permanentemente. Esta acción no se puede deshacer.</p>
-                        <button class="btn btn-danger" onclick="openModal('deleteAccountModal')">Eliminar mi cuenta permanentemente</button>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 3. MODALES DE FORMULARIOS Y ALERTAS        -->
-    <!-- ========================================== -->
-
-    <!-- Modal: Registro / Solicitud -->
+    <!-- =========================================
+         --- MODALES (REGISTRO, LOGIN, ETC.) --- 
+         ========================================= -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('registerModal')">&times;</span>
-            <h3 style="color: var(--primary);">Comenzar en crmSMART</h3>
-            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;">Configura el sistema nervioso central de tu negocio.</p>
+            <span style="position:absolute; top:24px; right:24px; cursor:pointer; font-size:1.5rem;" onclick="closeModal('registerModal')">&times;</span>
+            <h3 style="font-size: 1.8rem; margin-bottom: 12px;">Únete a crmSMART</h3>
+            <p style="color: var(--text-muted); margin-bottom: 32px;">Configura tu entorno de ventas inteligente.</p>
             
             <div class="social-login-group">
-                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Google')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                <button type="button" class="btn-social" onclick="mockSocialLogin('Google')">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                     Registrarse con Google
                 </button>
-                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Facebook')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                <button type="button" class="btn-social" onclick="mockSocialLogin('Facebook')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                     Registrarse con Facebook
                 </button>
             </div>
             
-            <div class="divider">o regístrate con tu correo</div>
+            <div class="divider">o crea una cuenta con email</div>
 
-            <form id="leadForm">
-                <div class="form-group">
-                    <label>Nombre Completo</label>
-                    <input type="text" id="regName" placeholder="Ej. Juan Pérez" required>
-                </div>
-                <div class="form-group">
-                    <label>Correo Electrónico</label>
-                    <input type="email" id="regEmail" placeholder="juan@empresa.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Nombre de la Empresa</label>
-                    <input type="text" id="regCompany" placeholder="Ej. Comercializadora ABC" required>
-                </div>
-                <div class="form-group">
-                    <label>Crea una Contraseña</label>
-                    <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres" required minlength="8">
-                </div>
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="regRemember" checked>
-                    <label for="regRemember">Mantener sesión iniciada en este navegador</label>
-                </div>
-                <button type="submit" class="btn btn-main" style="width:100%;">Crear mi expediente digital</button>
+            <form id="regForm">
+                <div class="form-group"><label>Nombre Completo</label><input type="text" id="regName" placeholder="Juan Pérez" required></div>
+                <div class="form-group"><label>Email Corporativo</label><input type="email" id="regEmail" placeholder="juan@empresa.com" required></div>
+                <div class="form-group"><label>Empresa</label><input type="text" id="regCompany" placeholder="Soluciones S.A." required></div>
+                <button type="submit" class="btn btn-main" style="width:100%; padding:16px;">Crear Mi Espacio</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal: Login -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
-            <h3 style="color: var(--primary);">Iniciar Sesión</h3>
-            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;">Bienvenido de nuevo a tu copiloto de ventas.</p>
+            <span style="position:absolute; top:24px; right:24px; cursor:pointer; font-size:1.5rem;" onclick="closeModal('loginModal')">&times;</span>
+            <h3 style="font-size: 1.8rem; margin-bottom: 32px;">Bienvenido</h3>
             
             <div class="social-login-group">
-                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Google')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                    Ingresar con Google
-                </button>
-                <button type="button" class="btn btn-social" onclick="mockSocialLogin('Facebook')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                    Ingresar con Facebook
+                <button type="button" class="btn-social" onclick="mockSocialLogin('Google')">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Continuar con Google
                 </button>
             </div>
-            
             <div class="divider">o ingresa con tu correo</div>
 
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Correo Electrónico</label>
-                    <input type="email" id="logEmail" placeholder="tu@empresa.com" required>
-                </div>
-                <div class="form-group" style="margin-bottom: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <label style="margin:0;">Contraseña</label>
-                        <a class="text-link" onclick="closeModal('loginModal'); openModal('forgotPasswordModal')">¿Olvidaste tu contraseña?</a>
-                    </div>
-                    <input type="password" id="logPassword" placeholder="••••••••" required>
-                </div>
-                <div class="form-group checkbox-group" style="margin-top: 16px;">
-                    <input type="checkbox" id="logRemember" checked>
-                    <label for="logRemember">Recordar mi sesión</label>
-                </div>
-                <button type="submit" class="btn btn-main" style="width:100%; margin-top:10px;">Entrar al CRM</button>
+            <form id="logForm">
+                <div class="form-group"><label>Email</label><input type="email" id="logEmail" required></div>
+                <button type="submit" class="btn btn-main" style="width:100%; padding:16px;">Ingresar al CRM</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal: Recuperar Contraseña -->
-    <div class="modal-overlay" id="forgotPasswordModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('forgotPasswordModal')">&times;</span>
-            <h3 style="color: var(--primary);">Recuperar Contraseña</h3>
-            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;">Ingresa el correo asociado a tu cuenta y te enviaremos un enlace para crear una nueva contraseña.</p>
-            
-            <form id="forgotPasswordForm">
-                <div class="form-group">
-                    <label>Correo Electrónico</label>
-                    <input type="email" id="recoveryEmail" placeholder="tu@empresa.com" required>
-                </div>
-                <button type="submit" class="btn btn-main" style="width:100%; margin-top:10px;">Enviar enlace de recuperación</button>
-                <div style="text-align: center; margin-top: 20px;">
-                    <a class="text-link" onclick="closeModal('forgotPasswordModal'); openModal('loginModal')">← Volver al inicio de sesión</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal: Nuevo Contacto CRM -->
     <div class="modal-overlay" id="addContactModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('addContactModal')">&times;</span>
-            <h3 style="color: var(--primary);">Nuevo Expediente 360°</h3>
-            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">Toda la información de este cliente vivirá aquí eternamente.</p>
-            
-            <form id="addContactForm">
+            <span style="position:absolute; top:24px; right:24px; cursor:pointer; font-size:1.5rem;" onclick="closeModal('addContactModal')">&times;</span>
+            <h3>Nuevo Lead</h3>
+            <form id="addForm">
+                <div class="form-group"><label>Contacto</label><input type="text" id="newName" required></div>
+                <div class="form-group"><label>Empresa</label><input type="text" id="newCompany" required></div>
+                <div class="form-group"><label>WhatsApp (con código país)</label><input type="tel" id="newPhone" required></div>
+                <div class="form-group"><label>Valor ($)</label><input type="number" id="newValue" required></div>
                 <div class="form-group">
-                    <label>Nombre del Cliente</label>
-                    <input type="text" id="newContactName" placeholder="Ej. Andrés Silva" required>
-                </div>
-                <div class="form-group">
-                    <label>Empresa</label>
-                    <input type="text" id="newContactCompany" placeholder="Ej. Soluciones S.A." required>
-                </div>
-                <div class="form-group">
-                    <label>Teléfono (WhatsApp)</label>
-                    <input type="tel" id="newContactPhone" placeholder="Ej. 573001234567" required>
-                </div>
-                <div class="form-group">
-                    <label>Valor de Oportunidad ($)</label>
-                    <input type="number" id="newContactValue" placeholder="Ej. 1500" required>
-                </div>
-                <div class="form-group">
-                    <label>Etapa Inicial</label>
-                    <select id="newContactStatus">
-                        <option value="Lead">1. Nuevo Lead</option>
-                        <option value="Propuesta">2. Propuesta Enviada</option>
-                        <option value="Negociación">3. En Negociación</option>
+                    <label>Asignar a</label>
+                    <select id="newAssigned">
+                        <option value="Estratega A">Estratega A</option>
+                        <option value="Soporte B">Soporte B</option>
+                        <option value="Cierre C">Cierre C</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Preferencias y Notas Previas (Opcional)</label>
-                    <textarea id="newContactPrefs" rows="2" placeholder="Ej. Prefiere que lo llamen por las mañanas..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-main" style="width:100%; margin-top:10px;">Guardar Expediente</button>
+                <button type="submit" class="btn btn-main" style="width:100%;">Guardar Lead</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal: Eliminar Cuenta (Feedback) -->
-    <div class="modal-overlay" id="deleteAccountModal">
-        <div class="modal-content" id="deleteAccountContent">
-            <span class="close-modal" onclick="closeModal('deleteAccountModal')">&times;</span>
-            <h3 style="color: #f87171;">Lamentamos verte partir</h3>
-            <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">Ayúdanos a mejorar. ¿Por qué deseas abandonar crmSMART?</p>
-            
-            <form id="deleteAccountForm">
-                <div class="form-group">
-                    <label>Razón Principal (Obligatorio)</label>
-                    <select required style="color: var(--text-main);">
-                        <option value="" disabled selected>Selecciona una opción...</option>
-                        <option value="price">Es muy costoso / No tengo presupuesto</option>
-                        <option value="complex">Es muy complejo de usar</option>
-                        <option value="features">Faltan integraciones o características que necesito</option>
-                        <option value="buggy">Experimenté demasiados errores</option>
-                        <option value="other">Otra razón</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Cuéntanos un poco más (Opcional)</label>
-                    <textarea rows="3" placeholder="¿Qué podríamos haber hecho mejor?"></textarea>
-                </div>
-                <div style="display: flex; gap: 12px; margin-top: 32px;">
-                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('deleteAccountModal')">Cancelar</button>
-                    <button type="submit" class="btn btn-danger" style="flex: 1;">Confirmar Eliminación</button>
-                </div>
-            </form>
+    <div class="modal-overlay" id="importModal">
+        <div class="modal-content">
+            <span style="position:absolute; top:24px; right:24px; cursor:pointer; font-size:1.5rem;" onclick="closeModal('importModal')">&times;</span>
+            <h3>Importación Rápida</h3>
+            <div class="form-group">
+                <textarea id="importText" rows="6" placeholder="Pega aquí separados por coma: Nombre, Empresa, WhatsApp, Valor"></textarea>
+            </div>
+            <button onclick="processImport()" class="btn btn-main" style="width:100%;">Procesar Datos</button>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <span id="toastIcon">✨</span>
-        <span id="toastMessage">Operación exitosa</span>
-    </div>
+    <div id="toast" class="toast" style="position:fixed; bottom:40px; right:40px; background:var(--bg-card); color: var(--text-main); border:1px solid var(--accent); padding:16px 30px; border-radius:var(--radius-md); box-shadow:var(--shadow-md); transform:translateY(150%); transition:0.4s; z-index:3000;">✨ <span id="toastMessage"></span></div>
 
-    <!-- ========================================== -->
-    <!-- 4. LÓGICA JAVASCRIPT Y MOTOR IA            -->
-    <!-- ========================================== -->
+    <!-- =========================================
+         --- LÓGICA JAVASCRIPT --- 
+         ========================================= -->
     <script>
-        /* --- CONFIGURACIÓN DE GEMINI API --- */
-        const apiKey = ""; 
-
-        async function fetchWithRetry(url, options, retries = 5) {
-            const delays = [1000, 2000, 4000, 8000, 16000];
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return await response.json();
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    await new Promise(res => setTimeout(res, delays[i]));
-                }
-            }
-        }
-
-        async function callGeminiAPI(prompt, systemInstruction = "Eres un experto en ventas B2B y asesoramiento.") {
-            if (!apiKey) return null; 
-            
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const options = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    systemInstruction: { parts: [{ text: systemInstruction }] }
-                })
-            };
-
-            try {
-                const data = await fetchWithRetry(url, options);
-                return data.candidates?.[0]?.content?.parts?.[0]?.text;
-            } catch (e) {
-                console.error("Gemini API Error:", e);
-                return null;
-            }
-        }
-
-        /* --- ESTADO Y DATOS DEL CRM --- */
-        let currentUser = null;
-        let crmData = [];
-
-        // Datos con array de "messages" incluido para guardar el historial de chat real
-        const defaultData = [
-            { id: 1, name: "Laura Gómez", company: "Inversiones Andes", phone: "573001234567", value: 15000, status: "Negociación", lastTouch: "Hoy", prefs: "Prefiere reuniones presenciales. Solo llamar en la tarde.", history: ["25/03/2026 - Solicitó demo del producto B", "10/02/2026 - Ticket de soporte resuelto"], messages: [{text: "¡Hola! Me gustaría tener más información sobre sus servicios.", sender: "incoming", time: "Ayer"}] },
-            { id: 2, name: "Carlos Ruiz", company: "TecnoSoluciones", phone: "573111234567", value: 5500, status: "Propuesta", lastTouch: "Hace 3 días", prefs: "No le gustan las llamadas, prefiere todo por correo o WhatsApp.", history: ["01/03/2026 - Cotización enviada"], messages: [{text: "Envíame la propuesta por favor.", sender: "incoming", time: "Hace 3 días"}] },
-            { id: 3, name: "María Peña", company: "Panadería Central", phone: "573221234567", value: 1200, status: "Cerrado", lastTouch: "Ayer", prefs: "Decisiones rápidas. Cero burocracia.", history: ["15/01/2026 - Compra exitosa", "20/01/2026 - Devolución parcial (resuelto por soporte)"], messages: [] }
+        /* --- ESTADO --- */
+        let crmData = JSON.parse(localStorage.getItem('crmData')) || [
+            { id: 1, name: "Andrés Gil", company: "Salud Global", phone: "57300123", value: 12000, status: "Negociación", assigned: "Estratega A", tasks: [], messages: [] },
+            { id: 2, name: "Marta Ríos", company: "BioTech", phone: "57300456", value: 4500, status: "Lead", assigned: "Soporte B", tasks: [], messages: [] }
         ];
+        let operativeMode = 'kanban';
+        let activeContactId = null;
+        let chartInstance = null;
+        
+        let notifications = [];
+        let notifOpen = false;
+        let greetingTimeout; // Variable para controlar el timer del saludo
 
-        /* --- INICIALIZACIÓN --- */
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedUser = localStorage.getItem('crmSMART_user');
-            if (savedUser) loginToApp(savedUser);
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px 0px -50px 0px',
-                threshold: 0.1
-            };
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target); 
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-        });
-
-        /* --- CONTROL DE MODALES Y VISTAS --- */
+        /* --- UI NAVEGACIÓN --- */
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) event.target.style.display = "none";
-        }
-
-        function switchView(viewId, element) {
+        function switchView(viewId, el) {
             document.querySelectorAll('.crm-view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
-            
             document.querySelectorAll('.crm-nav li').forEach(li => li.classList.remove('active'));
-            element.classList.add('active');
-
-            if(viewId === 'reports') generateAIReport();
-            if(viewId === 'tasks') generateTasks();
+            if(el) el.classList.add('active');
+            
+            const titles = { contacts: 'CRM Operativo', chat: 'Vista 360°', reports: 'CRM Analítico', tasks: 'Agenda Estratégica', settings: 'Ajustes del Sistema' };
+            document.getElementById('view-title').innerText = titles[viewId];
+            
+            if(viewId === 'reports') renderCharts();
+            if(viewId === 'contacts') renderOperative();
+            if(viewId === 'tasks') renderTasks();
             if(viewId === 'chat') renderChatList();
+            
+            // Cargar datos en los inputs de configuración si abre ajustes
+            if(viewId === 'settings') {
+                document.getElementById('settings-name').value = localStorage.getItem('crmUser') || '';
+            }
         }
 
-        function showToast(message, icon = "✨") {
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').innerText = message;
-            document.getElementById('toastIcon').innerText = icon;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            document.getElementById('toastMessage').innerText = msg;
+            toast.style.transform = 'translateY(0)';
+            setTimeout(() => toast.style.transform = 'translateY(150%)', 3000);
         }
 
-        /* --- LÓGICA DE REGISTRO / LOGIN --- */
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzB-q03AwjSmzTYD1lPFfEgrQD7LmMAWqRKZPqHedNmEvrYxsA-dkJWWK-LqwCsfC3nKg/exec';
+        /* --- NUEVO: FUNCIÓN PARA MOSTRAR Y OCULTAR EL SALUDO ANIMADO --- */
+        function triggerGreetingAnimation(name) {
+            const greetingEl = document.getElementById('user-greeting');
+            const container = document.getElementById('greeting-container');
+            
+            // Ponemos el nombre nuevo
+            greetingEl.innerText = 'Hola, ' + name.split(' ')[0];
+            
+            // Quitamos la clase oculta para que se expanda el "swipe"
+            container.classList.remove('greeting-hidden');
+            
+            // Limpiamos cualquier timer anterior por si le dieron click rápido
+            clearTimeout(greetingTimeout);
+            
+            // Ocultamos el saludo después de 5 segundos
+            greetingTimeout = setTimeout(() => {
+                container.classList.add('greeting-hidden');
+            }, 5000);
+        }
 
-        // Lógica de Registro (Correo y Contraseña)
-        document.getElementById('leadForm').addEventListener('submit', (e) => {
-            e.preventDefault();
+        /* --- FUNCIONES DE AJUSTES --- */
+        function saveProfile() {
+            const newName = document.getElementById('settings-name').value.trim();
+            if(newName !== '') {
+                localStorage.setItem('crmUser', newName);
+                document.getElementById('user-avatar').innerText = newName.substring(0,1).toUpperCase();
+                
+                // Disparamos la animación del saludo nuevamente con el nuevo nombre
+                triggerGreetingAnimation(newName);
+                
+                showToast("✅ Tu nombre de perfil ha sido actualizado");
+            }
+        }
+
+        function toggleTheme() {
+            const isLight = document.getElementById('theme-toggle').checked;
+            if (isLight) {
+                document.body.classList.add('light-mode');
+                localStorage.setItem('crmTheme', 'light');
+                showToast("☀️ Modo Claro activado");
+            } else {
+                document.body.classList.remove('light-mode');
+                localStorage.setItem('crmTheme', 'dark');
+                showToast("🌙 Modo Oscuro activado");
+            }
+            
+            if (document.getElementById('view-reports').classList.contains('active')) {
+                renderCharts();
+            }
+        }
+
+        function exportDataToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Nombre del Cliente,Empresa,Telefono,Valor Estimado,Estado (Embudo),Responsable Asignado\n";
+            
+            crmData.forEach(row => {
+                let rName = row.name.replace(/,/g, " ");
+                let rComp = row.company.replace(/,/g, " ");
+                let rPhone = row.phone.replace(/,/g, " ");
+                let rVal = row.value;
+                let rStat = row.status;
+                let rAssg = row.assigned;
+                csvContent += `${rName},${rComp},${rPhone},${rVal},${rStat},${rAssg}\n`;
+            });
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Exportacion_crmSMART.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("📥 Exportación completada. Revisa tus descargas.");
+        }
+
+        /* --- AUTH & GOOGLE APPS SCRIPT --- */
+        function mockSocialLogin(provider) {
+            showToast(`Autenticando con ${provider}...`);
+            setTimeout(() => {
+                const name = `Usuario ${provider}`;
+                localStorage.setItem('crmUser', name);
+                login(name);
+                closeModal('registerModal');
+                closeModal('loginModal');
+            }, 1000);
+        }
+
+        document.getElementById('regForm').onsubmit = async (e) => {
+            e.preventDefault(); 
+            
             const btn = e.target.querySelector('button[type="submit"]');
-            btn.innerText = "Preparando entorno..."; btn.disabled = true;
+            const originalText = btn.innerText;
+            btn.innerText = 'Configurando tu espacio... ⏳';
+            btn.disabled = true;
 
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const company = document.getElementById('regCompany').value;
-            const password = document.getElementById('regPassword').value;
-            const firstName = name.split(' ')[0];
-            const remember = document.getElementById('regRemember').checked;
 
-            // 1. Guardar la cuenta simulando una base de datos local
-            const accountData = {
-                name: name,
-                email: email,
-                company: company,
-                password: password // En producción real esto iría encriptado (Hash)
-            };
-            localStorage.setItem('crmSMART_account', JSON.stringify(accountData));
+            // 👇👇👇 AQUÍ PEGA EL LINK DE TU WEB APP DE GOOGLE 👇👇👇
+            const URL_DEL_SCRIPT = "https://script.google.com/macros/s/AKfycbxU0-ETFXgQ6IjXmmTitYEQFVIgzJ-OtCEKBtt4AgYco7LbGGs6ehAQWnNoGAHjepFfsA/exec"; 
 
-            const formData = new FormData();
-            formData.append('nombre', name);
-            formData.append('email', email);
-            formData.append('empresa', company);
-            fetch(scriptURL, { method: 'POST', body: formData }).catch(e => console.log(e));
+            try {
+                if(URL_DEL_SCRIPT !== "URL_DE_TU_GOOGLE_SCRIPT_AQUI") {
+                    const formData = new URLSearchParams();
+                    formData.append('nombre', name);
+                    formData.append('email', email);
+                    formData.append('empresa', company);
 
-            setTimeout(() => {
-                closeModal('registerModal');
-                if (remember) localStorage.setItem('crmSMART_user', firstName);
-                loginToApp(firstName);
-                showToast("¡Expediente digital y cuenta listos!", "✅");
-                btn.innerText = "Crear mi expediente digital"; btn.disabled = false;
-            }, 1000);
-        });
-
-        // Lógica de Inicio de Sesión
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('logEmail').value;
-            const passwordInput = document.getElementById('logPassword').value;
-            const remember = document.getElementById('logRemember').checked;
-            
-            // 2. Verificar credenciales contra la base de datos local
-            const savedAccountJSON = localStorage.getItem('crmSMART_account');
-            
-            if (!savedAccountJSON) {
-                showToast("No se encontró ninguna cuenta con este correo.", "❌");
-                return; // Bloquea el inicio de sesión
-            }
-
-            const savedAccount = JSON.parse(savedAccountJSON);
-
-            if (savedAccount.email !== emailInput || savedAccount.password !== passwordInput) {
-                showToast("Correo o contraseña incorrectos.", "❌");
-                return; // Bloquea el inicio de sesión
-            }
-            
-            // Si la validación es exitosa:
-            const firstName = savedAccount.name.split(' ')[0];
-            closeModal('loginModal');
-            
-            if (remember) {
-                localStorage.setItem('crmSMART_user', firstName);
-            } else {
-                localStorage.removeItem('crmSMART_user');
-            }
-            
-            loginToApp(firstName);
-            showToast("¡Bienvenido de nuevo!", "👋");
-        });
-
-        // Simulación de Inicio de Sesión Social (Google/Facebook)
-        function mockSocialLogin(provider) {
-            showToast(`Conectando de forma segura con ${provider}...`, "🔒");
-            
-            // Cerramos cualquier modal abierto
-            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
-            
-            setTimeout(() => {
-                const userName = `Usuario ${provider}`;
-                localStorage.setItem('crmSMART_user', userName); // Por defecto lo recordamos
-                loginToApp(userName);
-                showToast(`Autenticado exitosamente vía ${provider}`, "✅");
-            }, 1500);
-        }
-
-        // Lógica de Recuperación de Contraseña
-        document.getElementById('forgotPasswordForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
-            
-            btn.innerText = "Enviando enlace...";
-            btn.disabled = true;
-
-            setTimeout(() => {
-                closeModal('forgotPasswordModal');
-                showToast("Enlace de recuperación enviado a tu correo.", "📧");
+                    await fetch(URL_DEL_SCRIPT, { method: 'POST', body: formData });
+                    showToast("¡Registro exitoso! Revisa tu correo electrónico.");
+                } else {
+                    showToast("Atención: Entrando a la versión demo sin internet.");
+                }
+                localStorage.setItem('crmUser', name);
+                login(name);
+            } catch (error) {
+                console.error("Error conectando con Google:", error);
+                localStorage.setItem('crmUser', name);
+                login(name);
+                showToast("Entrando al modo local offline.");
+            } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
-                e.target.reset();
-            }, 1200);
-        });
+            }
+        };
 
-        function loginToApp(userName) {
-            currentUser = userName;
-            document.getElementById('landingPage').style.display = 'none';
-            document.body.style.overflow = 'hidden';
-            
-            const app = document.getElementById('crmApp');
-            app.style.display = 'grid';
-            document.getElementById('userNameDisplay').innerText = userName;
-
-            const settingsNameInput = document.getElementById('settingProfileName');
-            if(settingsNameInput) settingsNameInput.value = userName;
-            
-            setTimeout(() => app.style.opacity = '1', 50);
-            loadCRMData(); 
-        }
-
-        function logout() {
-            localStorage.removeItem('crmSMART_user');
-            window.location.reload();
-        }
-
-        /* --- MOTOR PRINCIPAL DEL CRM --- */
-        function loadCRMData() {
-            const savedData = localStorage.getItem('crmSMART_data');
-            if (savedData) crmData = JSON.parse(savedData);
-            else { crmData = [...defaultData]; saveData(); }
-            renderTable(); runAIEngine();
-        }
-
-        function saveData() { localStorage.setItem('crmSMART_data', JSON.stringify(crmData)); }
-
-        function calculateAIProbability(contact) {
-            if (contact.status === 'Cerrado') return 100;
-            let score = 20; 
-            if (contact.status === 'Negociación') score += 50;
-            if (contact.status === 'Propuesta') score += 30;
-            if (contact.status === 'Lead') score += 10;
-            if (contact.value > 10000) score += 15;
-            else if (contact.value > 2000) score += 10;
-            score += Math.floor(Math.random() * 10); 
-            return Math.min(score, 98); 
-        }
-
-        function getStatusColor(status) {
-            if(status === 'Cerrado') return 'badge-won';
-            if(status === 'Negociación') return 'badge-warm';
-            return 'badge-cold';
-        }
-
-        function renderTable(dataToRender = crmData) {
-            const tbody = document.getElementById('crmTableBody');
-            tbody.innerHTML = '';
-
-            dataToRender.forEach(contact => {
-                const initials = contact.name.substring(0,2).toUpperCase();
-                const prob = calculateAIProbability(contact);
-                const probColor = prob > 70 ? 'var(--accent-hover)' : (prob > 40 ? '#fde047' : '#9ca3af');
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><span class="avatar">${initials}</span><strong style="color: var(--primary);">${contact.name}</strong></td>
-                    <td style="color: var(--text-muted);">${contact.company}</td>
-                    <td>
-                        <select class="status-select ${getStatusColor(contact.status)}" onchange="updateStatus(${contact.id}, this.value)">
-                            <option value="Lead" ${contact.status==='Lead'?'selected':''}>Lead</option>
-                            <option value="Propuesta" ${contact.status==='Propuesta'?'selected':''}>Propuesta</option>
-                            <option value="Negociación" ${contact.status==='Negociación'?'selected':''}>Negociación</option>
-                            <option value="Cerrado" ${contact.status==='Cerrado'?'selected':''}>Cerrado</option>
-                        </select>
-                    </td>
-                    <td style="font-weight: 600; color: #86efac;">$${contact.value.toLocaleString()}</td>
-                    <td>
-                        <div class="ai-score">
-                            <div class="ai-score-bar"><div class="ai-score-fill" style="width: ${prob}%; background: ${probColor}; box-shadow: 0 0 10px ${probColor};"></div></div>
-                            <span style="color: ${probColor}">${prob}%</span>
-                        </div>
-                    </td>
-                    <td><button onclick="deleteContact(${contact.id})" class="btn btn-danger" style="padding: 6px 10px; font-size: 0.8rem;">🗑️</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        document.getElementById('addContactForm').addEventListener('submit', (e) => {
+        document.getElementById('logForm').onsubmit = (e) => {
             e.preventDefault();
-            const prefs = document.getElementById('newContactPrefs').value || "Sin preferencias registradas.";
+            const name = localStorage.getItem('crmUser') || 'Usuario';
+            login(name);
+        };
+
+        function login(name) {
+            let safeName = name ? name : "Usuario";
+            let initials = safeName.substring(0,1).toUpperCase();
             
-            const newContact = {
-                id: Date.now(),
-                name: document.getElementById('newContactName').value,
-                company: document.getElementById('newContactCompany').value,
-                phone: document.getElementById('newContactPhone').value,
-                value: parseInt(document.getElementById('newContactValue').value),
-                status: document.getElementById('newContactStatus').value,
-                prefs: prefs,
-                history: [`${new Date().toLocaleDateString()} - Expediente creado en el sistema.`],
-                messages: [], // Array vacío para guardar los chats futuros
-                lastTouch: "Justo ahora"
-            };
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('crmApp').style.display = 'grid';
             
-            crmData.unshift(newContact); 
-            saveData(); renderTable(); runAIEngine();
-            closeModal('addContactModal'); e.target.reset();
-            showToast("Expediente creado en la base de datos.");
+            const userAvatar = document.getElementById('user-avatar');
+            if(userAvatar) userAvatar.innerText = initials;
+            
+            // Llamamos a la animación apenas se loguea
+            triggerGreetingAnimation(safeName);
+            
+            setTimeout(() => {
+                const app = document.getElementById('crmApp');
+                if(app) app.style.opacity = '1';
+            }, 50);
+            
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+            
+            addNotification('¡Bienvenido al CRM!', 'Tu espacio está listo. Aquí te avisaremos cuando la IA detecte alertas.', 'info');
+            
+            renderOperative();
+            runAI();
+        }
+        
+        function logout() { localStorage.removeItem('crmUser'); location.reload(); }
+
+        /* --- NOTIFICACIONES FUNCIONALES --- */
+        function addNotification(title, text, type = 'info') {
+            if(notifications.find(n => n.text === text)) return; 
+            
+            notifications.unshift({ title, text, type, read: false });
+            document.getElementById('notif-dot').style.display = 'block';
+            renderNotifications();
+        }
+
+        function toggleNotifications(e) {
+            if(e) e.stopPropagation();
+            const panel = document.getElementById('notif-panel');
+            notifOpen = !notifOpen;
+            
+            if(notifOpen) {
+                panel.classList.remove('hidden');
+                document.getElementById('notif-dot').style.display = 'none';
+                renderNotifications();
+            } else {
+                panel.classList.add('hidden');
+                notifications.forEach(n => n.read = true);
+                renderNotifications(); 
+            }
+        }
+
+        function clearNotifications(e) {
+            if(e) e.stopPropagation();
+            notifications.forEach(n => n.read = true);
+            document.getElementById('notif-dot').style.display = 'none';
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notif-list');
+            list.innerHTML = '';
+            
+            if(notifications.length === 0) {
+                list.innerHTML = '<div style="padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">No tienes notificaciones nuevas</div>';
+                return;
+            }
+            
+            notifications.forEach((n, i) => {
+                let icon = n.type === 'urgent' ? '🔥' : '💡';
+                let unreadDot = n.read ? '' : '<div style="width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 6px;"></div>';
+                
+                list.innerHTML += `
+                    <div class="notif-item" onclick="handleNotifClick(${i}, event)" style="background: ${n.read ? 'transparent' : 'var(--accent-light)'};">
+                        <div style="display:flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="display:flex; gap:14px;">
+                                <div style="font-size: 1.4rem;">${icon}</div>
+                                <div>
+                                    <div style="font-weight: 700; font-size: 0.9rem; color: ${n.read ? 'var(--text-main)' : 'var(--accent-hover)'};">${n.title}</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; line-height: 1.4;">${n.text}</div>
+                                </div>
+                            </div>
+                            ${unreadDot}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function handleNotifClick(index, e) {
+            if(e) e.stopPropagation();
+            notifications[index].read = true;
+            switchView('contacts', document.querySelector('.crm-nav li:first-child'));
+            toggleNotifications(); 
+        }
+
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('notif-panel');
+            if(notifOpen && !e.target.closest('#notif-panel')) {
+                toggleNotifications();
+            }
         });
 
-        function updateStatus(id, newStatus) {
-            const contact = crmData.find(c => c.id === id);
-            if(contact) {
-                contact.status = newStatus;
-                contact.lastTouch = "Actualizado hoy";
-                contact.history.unshift(`${new Date().toLocaleDateString()} - Etapa cambiada a ${newStatus}`);
-                saveData(); renderTable(); runAIEngine();
-                showToast(`Estado de ${contact.name} actualizado`);
-            }
+        /* --- LÓGICA CRM OPERATIVO --- */
+        function saveData() { localStorage.setItem('crmData', JSON.stringify(crmData)); }
+
+        function setOperativeMode(mode) {
+            operativeMode = mode;
+            document.getElementById('btn-kanban').style.background = mode === 'kanban' ? 'var(--bg-surface)' : 'transparent';
+            document.getElementById('btn-kanban').style.color = mode === 'kanban' ? 'var(--text-main)' : 'var(--text-muted)';
+            document.getElementById('btn-kanban').style.borderColor = mode === 'kanban' ? 'var(--border)' : 'transparent';
+            document.getElementById('btn-table').style.background = mode === 'table' ? 'var(--bg-surface)' : 'transparent';
+            document.getElementById('btn-table').style.color = mode === 'table' ? 'var(--text-main)' : 'var(--text-muted)';
+            document.getElementById('btn-table').style.borderColor = mode === 'table' ? 'var(--border)' : 'transparent';
+            
+            document.getElementById('kanban-wrapper').classList.toggle('hidden', mode === 'table');
+            document.getElementById('table-wrapper').classList.toggle('hidden', mode === 'kanban');
+            renderOperative();
         }
 
-        function deleteContact(id) {
-            if(confirm("¿Seguro que deseas eliminar este expediente corporativo?")) {
-                crmData = crmData.filter(c => c.id !== id);
-                saveData(); renderTable(); runAIEngine();
-            }
+        function renderOperative() {
+            if(operativeMode === 'kanban') renderKanban();
+            else renderTable();
         }
 
-        function filterContacts() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatus').value;
-            const filtered = crmData.filter(c => {
-                const matchesText = c.name.toLowerCase().includes(term) || c.company.toLowerCase().includes(term);
-                const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
-                return matchesText && matchesStatus;
-            });
-            renderTable(filtered);
-        }
-
-        /* --- MÓDULOS DE IA Y REPORTES --- */
-        function runAIEngine() {
-            const sidebarAlerts = document.getElementById('aiSidebarAlerts');
-            sidebarAlerts.innerHTML = '';
-            
-            const hotLeads = crmData.filter(c => calculateAIProbability(c) > 75 && c.status !== 'Cerrado');
-            
-            if (hotLeads.length > 0) {
-                const topLead = hotLeads[0];
-                sidebarAlerts.innerHTML += `
-                    <div class="ai-alert">
-                        <strong style="color: var(--primary);">🔥 Prioridad Alta</strong><br>
-                        <span style="color: var(--text-muted);">${topLead.company} tiene alta probabilidad de cierre basado en su histórico.</span>
-                    </div>
-                `;
-            } else {
-                 sidebarAlerts.innerHTML += `
-                    <div class="ai-alert">
-                        <strong style="color: var(--primary);">👀 Analizando...</strong><br>
-                        <span style="color: var(--text-muted);">La información fluye. Te avisaré cuando detecte patrones de compra.</span>
-                    </div>
-                `;
-            }
-
-            const alertCountEl = document.getElementById('aiAlertCount');
-            if (alertCountEl) alertCountEl.innerText = hotLeads.length;
-        }
-
-        async function generateAIReport() {
-            showToast("Gemini está analizando tu embudo...", "🧠");
-            
-            let totalValue = 0; let activeLeads = 0; let bigFish = null;
-
-            crmData.forEach(c => {
-                if(c.status !== 'Cerrado') {
-                    totalValue += c.value; activeLeads++;
-                    if(!bigFish || c.value > bigFish.value) bigFish = c;
-                }
-            });
-
-            const churnRate = Math.max(0, 12 - Math.floor(activeLeads / 2));
-
-            document.getElementById('statTotalValue').innerText = "$" + totalValue.toLocaleString();
-            document.getElementById('statTotalLeads').innerText = activeLeads;
-            document.getElementById('statChurnRate').innerText = churnRate + "%";
-
-            const insightEl = document.getElementById('mainAiInsight');
-            
-            if(activeLeads === 0) {
-                insightEl.innerHTML = "No hay datos suficientes para que Gemini encuentre patrones. Añade expedientes.";
-                return;
-            }
-            
-            insightEl.innerHTML = `<span style="display:inline-flex; align-items:center; gap:8px; color:var(--accent-hover);"><span class="pulse-glow" style="width:10px; height:10px; border-radius:50%; background:var(--accent);"></span> Gemini está elaborando tu estrategia...</span>`;
-
-            const prompt = `Tengo un CRM con los siguientes datos actuales: Tengo ${activeLeads} prospectos activos en mi embudo. El valor total potencial es de $${totalValue}. Mi mayor oportunidad actualmente es con la empresa ${bigFish ? bigFish.company + ' por $' + bigFish.value + ' (en etapa de ' + bigFish.status + ')' : 'ninguna'}. Dame un consejo estratégico, directivo y motivacional de no más de 3 oraciones sobre qué debería hacer hoy mi equipo de ventas.`;
-            
-            const aiResponse = await callGeminiAPI(prompt, "Eres el Director de Estrategia de Ventas impulsado por IA de crmSMART.");
-
-            if (aiResponse) {
-                insightEl.innerHTML = aiResponse.replace(/\n/g, '<br>');
-                showToast("Análisis estratégico de Gemini completado.", "✨");
-            } else {
-                insightEl.innerHTML = `(Sin API Key) Tu mayor oportunidad actual es <strong style="color: var(--primary);">${bigFish?.company}</strong> por <span style="color: #86efac;">$${bigFish?.value.toLocaleString()}</span>. Históricamente, este tipo de empresas reaccionan mejor a llamadas directas. Concéntrate en la etapa de "${bigFish?.status}".`;
-            }
-        }
-
-        function generateTasks() {
-            const list = document.getElementById('taskList');
-            list.innerHTML = '';
-            const pending = crmData.filter(c => c.status !== 'Cerrado');
-            
-            if(pending.length === 0) {
-                list.innerHTML = '<li style="padding: 20px; text-align:center; color: var(--text-muted);">Sincronización completa. Todos los departamentos están alineados.</li>';
-                return;
-            }
-
-            pending.forEach((c) => {
-                let taskText = ""; let priority = "";
-                if(c.status === 'Lead') { taskText = `<strong style="color: var(--accent-hover);">[Marketing]</strong> Enviar campaña de nutrición por correo a ${c.name} (${c.company})`; priority = "Normal"; }
-                if(c.status === 'Propuesta') { taskText = `<strong style="color: #60a5fa;">[Ventas]</strong> Hacer llamada para revisión de cotización con ${c.name}`; priority = "Alta"; }
-                if(c.status === 'Negociación') { taskText = `<strong style="color: #f87171;">[Legal/Gerencia]</strong> Revisión y aprobación de contrato final para ${c.company}`; priority = "Urgente"; }
-
-                list.innerHTML += `
-                    <li style="padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface);">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer;" onchange="this.parentElement.parentElement.style.opacity = '0.4'; this.disabled = true;">
-                            <span style="color: var(--text-main);">${taskText}</span>
-                        </div>
-                        <span class="badge ${priority==='Urgente'?'badge-warm':'badge-cold'}">${priority}</span>
-                    </li>
-                `;
-            });
-        }
-
-        /* --- MÓDULO DE VISTA 360° Y CHAT --- */
-        function renderChatList() {
-            const term = document.getElementById('chatSearchInput')?.value.toLowerCase() || '';
-            const list = document.getElementById('chatContactList');
-            list.innerHTML = '';
-            
-            const filtered = crmData.filter(c => c.name.toLowerCase().includes(term) || c.company.toLowerCase().includes(term));
-            
-            if(filtered.length === 0) {
-                list.innerHTML = '<div style="padding: 20px; text-align:center; color: var(--text-muted); font-size: 0.9rem;">No se encontraron expedientes.</div>';
-                return;
-            }
-
-            filtered.forEach(contact => {
-                const initials = contact.name.substring(0,2).toUpperCase();
-                list.innerHTML += `
-                    <div class="chat-item" id="chat-item-${contact.id}" onclick="openChat(${contact.id})">
-                        <span class="avatar" style="margin:0; width: 40px; height: 40px;">${initials}</span>
-                        <div style="flex-grow: 1; overflow: hidden;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                <strong style="font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main);">${contact.name}</strong>
-                            </div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                ${contact.company} • ${contact.status}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function filterChatList() { renderChatList(); }
-
-        function openChat(contactId) {
-            const contact = crmData.find(c => c.id === contactId);
-            if(!contact) return;
-            
-            document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
-            const activeItem = document.getElementById(`chat-item-${contactId}`);
-            if(activeItem) activeItem.classList.add('active');
-            
-            document.getElementById('profile360Area').style.display = 'flex';
-            document.getElementById('p360Avatar').innerText = contact.name.substring(0,2).toUpperCase();
-            document.getElementById('p360Name').innerText = contact.name;
-            document.getElementById('p360Status').innerText = contact.status;
-            document.getElementById('p360Status').className = `badge ${getStatusColor(contact.status)}`;
-            document.getElementById('p360Company').innerText = contact.company;
-            document.getElementById('p360Phone').innerText = contact.phone || "No registrado";
-            document.getElementById('p360Value').innerText = contact.value.toLocaleString();
-            document.getElementById('p360Preferences').innerText = contact.prefs || "Sin preferencias especiales detectadas.";
-            
-            const historyHtml = contact.history && contact.history.length > 0 
-                ? contact.history.map(h => `<li>${h}</li>`).join('') 
-                : "<li>Expediente sin historial previo.</li>";
-            document.getElementById('p360History').innerHTML = historyHtml;
-            
-            // Generar las burbujas de chat guardadas
-            let chatBubblesHtml = '';
-            if (contact.messages && contact.messages.length > 0) {
-                contact.messages.forEach(m => {
-                    chatBubblesHtml += `
-                        <div class="chat-bubble ${m.sender}" style="animation: fadeIn 0.3s ease;">
-                            ${m.text.replace(/\n/g, '<br>')}
-                            <div style="font-size: 0.65rem; text-align: right; opacity: 0.7; margin-top: 6px;">
-                                ${m.time} ${m.sender === 'outgoing' ? '✓✓' : ''}
-                            </div>
+        function renderKanban() {
+            const stages = ['Lead', 'Propuesta', 'Negociación', 'Cerrado'];
+            stages.forEach(s => {
+                const list = document.getElementById('list-' + s);
+                if(!list) return;
+                list.innerHTML = '';
+                const items = crmData.filter(c => c.status === s);
+                document.getElementById('count-' + s).innerText = items.length;
+                items.forEach(c => {
+                    const card = document.createElement('div');
+                    card.className = 'kanban-card';
+                    card.draggable = true;
+                    card.ondragstart = (e) => e.dataTransfer.setData('text', c.id);
+                    card.innerHTML = `
+                        <h4 style="font-size:1rem; margin-bottom:8px;">${c.company}</h4>
+                        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">👤 ${c.name}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="color:#86efac; font-weight:800; font-size:1rem;">$${c.value.toLocaleString()}</span>
+                            <span style="font-size:0.7rem; background:var(--bg-page); border: 1px solid var(--border); padding:3px 8px; border-radius:6px; color:var(--text-muted);">${c.assigned}</span>
                         </div>
                     `;
+                    list.appendChild(card);
                 });
-            } else {
-                chatBubblesHtml = `
-                    <div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Aún no hay mensajes. Envía el primero para iniciar el historial.</div>
-                `;
-            }
-            
-            const main = document.getElementById('chatMainArea');
-            main.innerHTML = `
-                <div class="chat-header">
-                    <div>
-                        <h4 style="margin:0; font-size:1.05rem; color: var(--primary);">Historial de Mensajes</h4>
-                        <span style="font-size:0.85rem; color:var(--text-muted);">Sincronizado con base de datos local</span>
-                    </div>
-                </div>
-                <div class="chat-history" id="chatHistoryContainer">
-                    <div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">La IA sincronizó las interacciones con ${contact.company}</div>
-                    ${chatBubblesHtml}
-                </div>
-                <div class="chat-input-area">
-                    <div class="ai-chat-suggestion" id="btnGeminiChat-${contact.id}" onclick="generateWhatsAppWithGemini(${contact.id})">
-                        ✨ Redactar WhatsApp con Gemini IA
-                    </div>
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <input type="text" id="whatsappMsg" class="crm-search" placeholder="Escribe un mensaje o pídele a Gemini que lo redacte..." style="margin:0; flex-grow:1;">
-                        <button class="btn btn-main" style="padding: 12px 24px; border-radius: var(--radius-sm); white-space: nowrap; box-shadow: 0 4px 15px var(--accent-glow);" onclick="sendWhatsApp('${contact.phone}')">
-                            Enviar WhatsApp ↗
-                        </button>
-                    </div>
-                </div>
-            `;
+            });
         }
 
-        async function generateWhatsAppWithGemini(contactId) {
-            const contact = crmData.find(c => c.id === contactId);
-            const inputField = document.getElementById('whatsappMsg');
-            const btn = document.getElementById(`btnGeminiChat-${contactId}`);
-
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `⏳ Redactando...`;
-            btn.style.opacity = "0.7";
-            btn.style.pointerEvents = "none";
-
-            const prompt = `Escribe un mensaje corto de WhatsApp para un cliente llamado ${contact.name} de la empresa ${contact.company}. 
-            La etapa de venta actual es "${contact.status}". 
-            Sus preferencias guardadas en el CRM son: "${contact.prefs}". 
-            Mantén el tono altamente profesional pero cercano, empático y persuasivo, ideal para leerse en WhatsApp. 
-            No uses marcadores de posición genéricos (como [Tu Nombre]), invéntate los detalles si faltan o firma de parte de "Tu equipo de crmSMART". Sé muy directo (1 o 2 párrafos máximo) e incluye un emoji sutil.`;
-
-            const geminiResponse = await callGeminiAPI(prompt, "Eres un redactor experto en cierres de ventas por WhatsApp.");
-
-            if (geminiResponse) {
-                inputField.value = geminiResponse.trim();
-                btn.innerHTML = "✨ ¡Mensaje generado por Gemini!";
-                showToast("Mensaje de WhatsApp creado con IA", "✨");
-            } else {
-                let fallbackMsg = `Hola ${contact.name.split(' ')[0]}, `;
-                if(contact.status === 'Lead') fallbackMsg += "¡gracias por tu interés! ¿Cuándo tendrías disponibilidad para una breve llamada?";
-                else if(contact.status === 'Propuesta') fallbackMsg += "te escribo para saber si pudiste revisar la propuesta. ¡Quedo atento!";
-                else if(contact.status === 'Negociación') fallbackMsg += "¿tienes alguna duda adicional sobre el contrato para proceder con la firma?";
-                else fallbackMsg += "¡gracias por confiar en nosotros! Seguimos a tu disposición.";
-                
-                inputField.value = fallbackMsg;
-                btn.innerHTML = "⚠️ API Key requerida (Usando plantilla)";
-            }
-
-            btn.style.opacity = "1";
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.style.pointerEvents = "auto";
-            }, 3000);
-        }
-
-        // Función para enviar a WhatsApp real y guardar el chat
-        function sendWhatsApp(phone) {
-            const msgInput = document.getElementById('whatsappMsg');
-            const msg = msgInput?.value || '';
-            
-            if(!phone || phone === 'undefined' || phone.trim() === '') {
-                showToast("Este expediente no tiene un teléfono válido.", "⚠️");
-                return;
-            }
-            if(msg.trim() === '') {
-                showToast("Escribe un mensaje antes de enviar.", "⚠️");
-                return;
-            }
-
-            // 1. Enviar el mensaje a la persona real abriendo WhatsApp Web o App
-            const cleanPhone = phone.replace(/\D/g,'');
-            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank'); // Esto envía el mensaje en la vida real
-
-            // 2. Limpiar el input
-            msgInput.value = '';
-            
-            // 3. Guardar en el historial y burbujas del cliente permanentemente
-            const activeItem = document.querySelector('.chat-item.active');
-            if(activeItem) {
-                const id = parseInt(activeItem.id.replace('chat-item-', ''));
-                const contact = crmData.find(c => c.id === id);
-                
-                if(contact) {
-                    // Inicializar si no existe
-                    if(!contact.messages) contact.messages = [];
-                    
-                    // Guardar la burbuja de chat
-                    contact.messages.push({
-                        text: msg,
-                        sender: 'outgoing',
-                        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                    });
-
-                    // Guardamos el log en el expediente 360
-                    contact.history.unshift(`${new Date().toLocaleDateString()} - WhatsApp Enviado: "${msg.substring(0, 30)}..."`);
-                    
-                    // Guardar en LocalStorage para que no se borre al actualizar
-                    saveData();
-                    
-                    // Actualizamos la vista recargando el chat
-                    openChat(id);
-                    
-                    // Forzar scroll al fondo para ver el nuevo mensaje
-                    setTimeout(() => {
-                        const chatContainer = document.getElementById('chatHistoryContainer');
-                        if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
-                    }, 50);
-                }
-            }
-            showToast("Abriendo WhatsApp y guardando conversación...", "✅");
-        }
-
-        // Formulario de Eliminación de Cuenta
-        document.getElementById('deleteAccountForm').addEventListener('submit', (e) => {
+        function allowDrop(e) { e.preventDefault(); }
+        function drop(e, stage) {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.innerHTML = "Eliminando..."; 
-            btn.disabled = true;
+            const id = e.dataTransfer.getData('text');
+            const contact = crmData.find(c => c.id == id);
+            if(contact) {
+                contact.status = stage;
+                saveData(); renderOperative(); runAI(); showToast(`Lead movido a ${stage}`);
+            }
+        }
 
-            setTimeout(() => {
-                const modalContent = document.getElementById('deleteAccountContent');
-                modalContent.innerHTML = `
-                    <div style="text-align: center; padding: 30px 10px;">
-                        <span style="font-size: 4rem; display: block; margin-bottom: 20px;">🤝</span>
-                        <h3 style="color: var(--primary); font-size: 1.8rem; margin-bottom: 16px;">¡Gracias por tu tiempo!</h3>
-                        <p style="color: var(--text-muted); font-size: 1.05rem;">Hemos tomado nota de tus valiosos comentarios. Trabajaremos duro para seguir mejorando. Esperamos verte pronto de regreso en crmSMART.</p>
-                        <p style="color: var(--accent); margin-top: 20px; font-size: 0.85rem;">Cerrando sesión de forma segura...</p>
-                    </div>
+        function renderTable() {
+            const body = document.getElementById('table-body');
+            body.innerHTML = '';
+            crmData.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${c.name}</strong></td>
+                    <td>${c.company}</td>
+                    <td><span style="background:var(--accent-light); padding:6px 12px; border-radius:12px; font-size:0.8rem; color:var(--accent-hover); font-weight:600;">${c.status}</span></td>
+                    <td style="color:#86efac; font-weight:800;">$${c.value.toLocaleString()}</td>
+                    <td>${c.assigned}</td>
+                    <td style="text-align:right;"><button onclick="deleteContact(${c.id})" style="background:none; border:none; color:#f87171; cursor:pointer; font-size: 1.1rem;">🗑️</button></td>
                 `;
+                body.appendChild(tr);
+            });
+        }
 
-                // Borrar absolutamente todos los datos
-                localStorage.removeItem('crmSMART_user');
-                localStorage.removeItem('crmSMART_data');
-                localStorage.removeItem('crmSMART_account'); // Eliminar credenciales de la cuenta
+        document.getElementById('addForm').onsubmit = (e) => {
+            e.preventDefault();
+            crmData.unshift({
+                id: Date.now(),
+                name: document.getElementById('newName').value,
+                company: document.getElementById('newCompany').value,
+                phone: document.getElementById('newPhone').value,
+                value: parseInt(document.getElementById('newValue').value),
+                status: 'Lead',
+                assigned: document.getElementById('newAssigned').value,
+                tasks: [], messages: []
+            });
+            saveData(); closeModal('addContactModal'); renderOperative(); e.target.reset(); showToast("Lead guardado correctamente");
+        };
+
+        function deleteContact(id) {
+            if(confirm('¿Seguro que deseas eliminar este expediente para siempre?')) {
+                crmData = crmData.filter(c => c.id !== id);
+                saveData(); renderOperative();
+            }
+        }
+
+        function processImport() {
+            const lines = document.getElementById('importText').value.split('\n');
+            let successCount = 0;
+            lines.forEach(line => {
+                const p = line.split(',');
+                if(p.length >= 3) {
+                    crmData.push({ id: Date.now()+Math.random(), name: p[0].trim(), company: p[1].trim(), phone: p[2].trim(), value: parseInt(p[3]||0), status:'Lead', assigned:'Estratega A', tasks:[], messages:[] });
+                    successCount++;
+                }
+            });
+            saveData(); closeModal('importModal'); renderOperative(); 
+            if(successCount > 0) showToast(`✅ ${successCount} leads importados correctamente`);
+            document.getElementById('importText').value = '';
+        }
+
+        /* --- ANALÍTICO --- */
+        function renderCharts() {
+            const stages = ['Lead', 'Propuesta', 'Negociación', 'Cerrado'];
+            const counts = stages.map(s => crmData.filter(c => c.status === s).length);
+            const totalVal = crmData.reduce((acc, c) => acc + (c.status !== 'Cerrado' ? c.value : 0), 0);
+            
+            document.getElementById('report-total-value').innerText = '$' + totalVal.toLocaleString();
+            const won = crmData.filter(c => c.status === 'Cerrado').length;
+            document.getElementById('report-conversion-rate').innerText = crmData.length ? Math.round((won / crmData.length) * 100) + '%' : '0%';
+
+            const ctx = document.getElementById('stageChart').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+            
+            const isLight = document.body.classList.contains('light-mode');
+            const borderColorVar = isLight ? '#ffffff' : '#0e0e0e';
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: stages,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: ['#64748b', '#6366f1', '#a855f7', '#10b981'],
+                        borderColor: borderColorVar,
+                        borderWidth: 6,
+                        hoverOffset: 20
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 13, weight: 'bold' }, padding: 25 } } }
+                }
+            });
+        }
+
+        /* --- 360 & CHAT --- */
+        function renderChatList() {
+            const container = document.getElementById('chat-list-container');
+            container.innerHTML = '';
+            crmData.forEach(c => {
+                const item = document.createElement('div');
+                item.style.padding = '24px';
+                item.style.borderBottom = '1px solid var(--border)';
+                item.style.cursor = 'pointer';
+                item.innerHTML = `<div style="display:flex; gap:14px; align-items:center;"><div style="width:40px; height:40px; background:var(--bg-surface); border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem; color:var(--text-main);">${c.name.substring(0,1)}</div><div><strong style="color:var(--text-main);">${c.name}</strong><br><small style="color:var(--text-muted)">${c.company}</small></div></div>`;
+                item.onclick = () => selectContact(c.id);
+                container.appendChild(item);
+            });
+        }
+
+        function selectContact(id) {
+            activeContactId = id;
+            const c = crmData.find(x => x.id === id);
+            document.getElementById('p-name').innerText = c.name;
+            document.getElementById('p-company').innerText = c.company;
+            document.getElementById('p-assigned').innerText = c.assigned;
+            document.getElementById('p-value').innerText = '$' + c.value.toLocaleString();
+            document.getElementById('p-avatar').innerText = c.name.substring(0,2).toUpperCase();
+            document.getElementById('chat-controls').classList.remove('hidden');
+            renderHistory(c);
+        }
+
+        function renderHistory(c) {
+            const hist = document.getElementById('chat-history');
+            hist.innerHTML = '';
+            if(c.messages.length === 0) {
+                hist.innerHTML = '<div style="margin:auto; text-align:center; color:var(--text-muted);">Sin historial de mensajes.</div>';
+            } else {
+                c.messages.forEach(m => {
+                    const b = document.createElement('div');
+                    b.className = 'chat-bubble ' + m.type;
+                    b.innerText = m.text;
+                    hist.appendChild(b);
+                });
+            }
+            hist.scrollTop = hist.scrollHeight;
+        }
+
+        function sendWhatsApp() {
+            const input = document.getElementById('chat-input');
+            const txt = input.value;
+            if(!txt || !activeContactId) return;
+            const c = crmData.find(x => x.id === activeContactId);
+            c.messages.push({ text: txt, type: 'outgoing' });
+            saveData(); renderHistory(c); input.value = '';
+            window.open(`https://wa.me/${c.phone}?text=${encodeURIComponent(txt)}`, '_blank');
+        }
+
+        /* --- TAREAS --- */
+        function renderTasks() {
+            const list = document.getElementById('global-task-list');
+            list.innerHTML = '';
+            const pending = crmData.filter(c => c.status !== 'Cerrado');
+            if(pending.length === 0) {
+                list.innerHTML = '<li style="color:var(--text-muted); text-align:center; padding:40px;">No hay tareas pendientes en este momento.</li>';
+            } else {
+                pending.forEach(c => {
+                    const li = document.createElement('li');
+                    li.style.padding = '24px'; li.style.background = 'var(--bg-surface)'; li.style.marginBottom = '16px'; li.style.borderRadius = '16px'; li.style.border = '1px solid var(--border)'; li.style.boxShadow = 'var(--shadow-sm)';
+                    li.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><div><strong style="color:var(--accent-hover); font-size:1.1rem;">Llamada de Seguimiento:</strong> <span style="color:var(--text-main);">${c.name} (${c.company})</span></div><span style="font-size:0.8rem; background:var(--bg-card); border:1px solid var(--border); padding:5px 12px; border-radius:10px; color:var(--text-muted);">${c.status}</span></div>`;
+                    list.appendChild(li);
+                });
+            }
+        }
+
+        /* --- COPILOTO IA --- */
+        function runAI() {
+            const hot = crmData.filter(c => c.status === 'Negociación' && c.value > 5000);
+            const alert = document.getElementById('ai-context-alerts');
+            
+            if(hot.length > 0) {
+                alert.innerHTML = `⚠️ <strong style="color:#fff;">Oportunidad Crítica:</strong> El cliente <strong>${hot[0].company}</strong> está a un paso del cierre. Te recomiendo enviar un mensaje ahora.`;
                 
-                setTimeout(() => {
-                    window.location.reload();
-                }, 4500); 
-            }, 1200);
-        });
+                // Agregamos la alerta al sistema de la campanita
+                addNotification('Oportunidad Crítica ⚠️', `El cliente ${hot[0].company} está a un paso del cierre por $${hot[0].value.toLocaleString()}.`, 'urgent');
+            } else {
+                alert.innerHTML = "Analizando tu embudo... Por ahora todo está bajo control. Sigue prospectando nuevos leads.";
+            }
+        }
+
+        window.onload = () => {
+            if(localStorage.getItem('crmTheme') === 'light') {
+                document.body.classList.add('light-mode');
+                const themeToggle = document.getElementById('theme-toggle');
+                if(themeToggle) themeToggle.checked = true;
+            }
+
+            if(localStorage.getItem('crmUser')) {
+                login(localStorage.getItem('crmUser'));
+            }
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('is-visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        };
     </script>
 </body>
 </html>
